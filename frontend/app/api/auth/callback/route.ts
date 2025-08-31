@@ -1,75 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { cookies } from 'next/headers'
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const code = searchParams.get('code');
-  const state = searchParams.get('state');
-
-  if (!code || !state) {
-    return NextResponse.redirect(new URL('/?error=invalid_callback', request.url));
+export async function GET(req: Request) {
+  const url = new URL(req.url)
+  const code = url.searchParams.get('code') || ''
+  const state = url.searchParams.get('state') || ''
+  const savedState = cookies().get('oidc_state')?.value
+  const verifier = cookies().get('oidc_verifier')?.value
+  if (!code || !state || !savedState || state !== savedState || !verifier) {
+    return new Response('Invalid OIDC state', { status: 400 })
   }
 
-  const cookieStore = cookies();
-  const savedState = cookieStore.get('auth_state')?.value;
-  const codeVerifier = cookieStore.get('code_verifier')?.value;
+  const kc = process.env.KEYCLOAK_URL || 'http://localhost:8080'
+  const realm = process.env.KEYCLOAK_REALM || 'creole'
+  const clientId = process.env.KEYCLOAK_FRONTEND_CLIENT_ID || 'creole-frontend'
+  const redirectUri = process.env.KEYCLOAK_REDIRECT_URI || 'http://localhost:3000/api/auth/callback'
 
-  if (!savedState || !codeVerifier || state !== savedState) {
-    return NextResponse.redirect(new URL('/?error=state_mismatch', request.url));
-  }
+  const tokenUrl = `${kc}/realms/${realm}/protocol/openid-connect/token`
+  const form = new URLSearchParams()
+  form.set('grant_type','authorization_code')
+  form.set('code', code)
+  form.set('client_id', clientId)
+  form.set('redirect_uri', redirectUri)
+  form.set('code_verifier', verifier)
 
-  try {
-    const keycloakUrl = process.env.KEYCLOAK_URL || 'http://localhost:8080';
-    const realm = process.env.KEYCLOAK_REALM || 'creole';
-    const clientId = process.env.KEYCLOAK_FRONTEND_CLIENT_ID || 'creole-frontend';
-    const redirectUri = process.env.KEYCLOAK_REDIRECT_URI || 'http://localhost:3000/api/auth/callback';
+  const res = await fetch(tokenUrl, { method: 'POST', headers: { 'Content-Type':'application/x-www-form-urlencoded' }, body: form })
+  if (!res.ok) return new Response('Token exchange failed', { status: 400 })
+  const tokens = await res.json() as any
 
-    const tokenUrl = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/token`;
-    
-    const tokenResponse = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        client_id: clientId,
-        code,
-        redirect_uri: redirectUri,
-        code_verifier: codeVerifier,
-      }),
-    });
+  const now = Math.floor(Date.now()/1000)
+  const expiresAt = now + (tokens.expires_in || 300)
 
-    if (!tokenResponse.ok) {
-      throw new Error('Token exchange failed');
-    }
+  cookies().set('creole_session', JSON.stringify({
+    access_token: tokens.access_token,
+    refresh_token: tokens.refresh_token,
+    id_token: tokens.id_token,
+    expires_at: expiresAt
+  }), { httpOnly: true, path: '/' })
 
-    const tokens = await tokenResponse.json();
-    
-    const session = {
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      id_token: tokens.id_token,
-      expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString(),
-    };
+  // cleanup
+  cookies().delete('oidc_state'); 
+  cookies().delete('oidc_verifier')
 
-    const response = NextResponse.redirect(new URL('/', request.url));
-    
-    // Set session cookie
-    response.cookies.set('creole_session', JSON.stringify(session), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: tokens.expires_in,
-    });
-    
-    // Clear auth cookies
-    response.cookies.delete('auth_state');
-    response.cookies.delete('code_verifier');
-
-    return response;
-  } catch (error) {
-    console.error('Auth callback error:', error);
-    return NextResponse.redirect(new URL('/?error=auth_failed', request.url));
-  }
+  return Response.redirect('/', 302)
 }
