@@ -1,0 +1,95 @@
+# Dependencies
+node_modules/
+*.pyc
+__pycache__/
+.Python
+env/
+venv/
+.venv/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+.coverage
+htmlcov/
+test-results/
+playwright-report/
+
+# Docker volumes (local development)
+postgres_data/
+minio_data/
+
+# Temporary files
+*.tmp
+.temp/
+tmp/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# MinIO local data
+.minio.sys/
+
+# Keycloak temp files
+keycloak/data/
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Next.js
+.next/
+out/
+.vercel
+
+# Production
+build/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
+.env*.local
+
+# Turbo
+.turbo

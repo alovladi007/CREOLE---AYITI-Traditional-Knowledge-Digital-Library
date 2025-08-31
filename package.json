@@ -1,0 +1,31 @@
+{
+  "name": "creole-monorepo",
+  "version": "1.0.0",
+  "description": "CREOLE - Center for Research in Ethnoscience, Orality, Language & Education",
+  "private": true,
+  "scripts": {
+    "start": "docker compose up",
+    "start:build": "docker compose up --build",
+    "stop": "docker compose down",
+    "clean": "docker compose down -v",
+    "seed": "docker compose exec backend npm run seed",
+    "test:e2e": "cd frontend && npm run test:e2e",
+    "logs": "docker compose logs -f",
+    "logs:backend": "docker compose logs -f backend",
+    "logs:frontend": "docker compose logs -f frontend",
+    "logs:nlp": "docker compose logs -f nlp",
+    "shell:backend": "docker compose exec backend sh",
+    "shell:frontend": "docker compose exec frontend sh",
+    "shell:db": "docker compose exec db psql -U creole -d creole"
+  },
+  "keywords": [
+    "traditional-knowledge",
+    "haiti",
+    "creole",
+    "tkdl",
+    "ethnoscience",
+    "cultural-heritage"
+  ],
+  "author": "CREOLE Team",
+  "license": "MIT"
+}

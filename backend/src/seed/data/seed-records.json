@@ -1,0 +1,36 @@
+{
+  "records": [
+    {
+      "title_ht": "Sòs Pwa Joumou",
+      "title_fr": "Soupe au Giraumon",
+      "abstract_en": "Traditional Haitian pumpkin soup prepared on January 1st to commemorate independence. This soup represents freedom and is shared among family and visitors.",
+      "creole_class": "C-FOOD",
+      "ipc_codes": ["A23L"],
+      "tk_labels": ["TK_Attribution", "TK_CulturallySensitive"],
+      "access_tier": "public",
+      "community": "National Heritage",
+      "region": ["Ouest", "Nord", "Sud"],
+      "metadata": {
+        "preparation_time": "4-6 hours",
+        "main_ingredients": ["joumou", "beef", "vegetables", "pasta"],
+        "cultural_significance": "Symbol of Haitian independence and freedom"
+      }
+    },
+    {
+      "title_ht": "Kasav",
+      "title_fr": "Cassave",
+      "abstract_en": "Traditional flatbread made from cassava (manioc) root, an indigenous staple food with pre-Columbian origins.",
+      "creole_class": "C-FOOD",
+      "ipc_codes": ["A21D"],
+      "tk_labels": ["TK_Attribution"],
+      "access_tier": "public",
+      "community": "Artibonite Communities",
+      "region": ["Artibonite", "Centre"],
+      "metadata": {
+        "preparation_method": "grating, pressing, drying, cooking",
+        "tools": "traditional grater, press, griddle",
+        "variations": ["kasav dous", "kasav sal"]
+      }
+    }
+  ]
+}
