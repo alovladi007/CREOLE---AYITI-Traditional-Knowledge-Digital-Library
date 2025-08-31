@@ -49,10 +49,12 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
     container_name: creole-keycloak
-    command: ["start-dev", "--import-realm"]
+    command: ["start-dev", "--import-realm", "--http-enabled=true", "--hostname-strict-https=false"]
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
     ports:
       - "8080:8080"
     volumes:
