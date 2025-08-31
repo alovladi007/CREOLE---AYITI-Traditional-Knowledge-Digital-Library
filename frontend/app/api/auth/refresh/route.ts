@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
 export async function POST() {
-  const kc = process.env.KEYCLOAK_URL || 'http://localhost:8080'
+  const kc = process.env.KEYCLOAK_URL || 'http://keycloak:8080'
   const realm = process.env.KEYCLOAK_REALM || 'creole'
   const clientId = process.env.KEYCLOAK_FRONTEND_CLIENT_ID || 'creole-frontend'
 

@@ -10,7 +10,8 @@ export async function GET(req: Request) {
     return new Response('Invalid OIDC state', { status: 400 })
   }
 
-  const kc = process.env.KEYCLOAK_URL || 'http://localhost:8080'
+  // Use keycloak service name when running in Docker
+  const kc = process.env.KEYCLOAK_URL || 'http://keycloak:8080'
   const realm = process.env.KEYCLOAK_REALM || 'creole'
   const clientId = process.env.KEYCLOAK_FRONTEND_CLIENT_ID || 'creole-frontend'
   const redirectUri = process.env.KEYCLOAK_REDIRECT_URI || 'http://localhost:3000/api/auth/callback'
