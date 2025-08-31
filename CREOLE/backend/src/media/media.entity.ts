@@ -8,7 +8,7 @@ export class MediaEntity extends BaseEntity {
   record: RecordEntity | null;
 
   @Column({ nullable: true })
-  recordId: string;
+  recordId: string | null;
 
   @Column() 
   key: string; // object key in MinIO
