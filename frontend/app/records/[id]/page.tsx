@@ -1,6 +1,12 @@
 async function fetchRecord(id: string) {
-  const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+  // Use backend service name for SSR, localhost for client
+  const isServer = typeof window === 'undefined';
+  const base = isServer ? 'http://backend:4000' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000');
   const res = await fetch(`${base}/v1/records/${id}`, { cache: 'no-store' });
+  if (!res.ok) {
+    console.error('Failed to fetch record:', res.status);
+    return null;
+  }
   return res.json();
 }
 
