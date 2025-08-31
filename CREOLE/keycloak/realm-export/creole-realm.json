@@ -1,6 +1,7 @@
 {
   "realm": "creole",
   "enabled": true,
+  "sslRequired": "none",
   "roles": {
     "realm": [
       {"name": "admin", "description": "CREOLE administrator"},
