@@ -1,14 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
-import { Public } from 'nest-keycloak-connect';
 import { LabelsService } from './labels.service';
+import { Public } from 'nest-keycloak-connect';
 
-@Controller('labels')
+@Controller('v1/labels')
 export class LabelsController {
-  constructor(private readonly labelsService: LabelsService) {}
-
+  constructor(private readonly service: LabelsService) {}
+  
   @Get()
   @Public()
-  async findAll() {
-    return await this.labelsService.findAll();
+  list() { 
+    return this.service.list(); 
   }
 }

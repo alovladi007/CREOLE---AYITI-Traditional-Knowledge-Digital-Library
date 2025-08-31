@@ -1,47 +1,15 @@
-import { IsString, IsOptional, IsArray, IsEnum, IsObject } from 'class-validator';
-import { AccessTier } from '../entities/record.entity';
+import { IsArray, IsIn, IsOptional, IsString } from 'class-validator';
 
 export class CreateRecordDto {
-  @IsString()
-  title_ht: string;
-
-  @IsString()
-  @IsOptional()
-  title_fr?: string;
-
-  @IsString()
-  @IsOptional()
-  abstract_en?: string;
-
-  @IsString()
-  @IsOptional()
-  creole_class?: string;
-
-  @IsArray()
-  @IsOptional()
-  ipc_codes?: string[];
-
-  @IsArray()
-  @IsOptional()
-  tk_labels?: string[];
-
-  @IsEnum(['public', 'restricted', 'secret'])
-  @IsOptional()
-  access_tier?: AccessTier;
-
-  @IsString()
-  @IsOptional()
-  examiner_digest?: string;
-
-  @IsString()
-  @IsOptional()
-  community?: string;
-
-  @IsArray()
-  @IsOptional()
-  region?: string[];
-
-  @IsObject()
-  @IsOptional()
-  metadata?: Record<string, any>;
+  @IsString() title_ht: string;
+  @IsOptional() @IsString() title_fr?: string;
+  @IsOptional() @IsString() abstract_en?: string;
+  @IsString() creole_class: string;
+  @IsOptional() @IsArray() ipc_codes?: string[];
+  @IsOptional() @IsArray() tk_labels?: string[];
+  @IsOptional() @IsIn(['public','restricted','secret']) access_tier?: 'public' | 'restricted' | 'secret';
+  @IsOptional() @IsString() examiner_digest?: string;
+  @IsOptional() @IsString() community?: string;
+  @IsOptional() @IsArray() region?: string[];
+  @IsOptional() metadata?: any;
 }

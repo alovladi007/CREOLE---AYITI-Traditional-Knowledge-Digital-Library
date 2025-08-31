@@ -1,137 +1,81 @@
-version: '3.8'
+version: "3.9"
 
 services:
   db:
     image: postgres:15
+    container_name: creole-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
-    networks:
-      - creole-network
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: creole-backend
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${API_PORT}:4000"
+    command: npm run start:prod
+
+  frontend:
+    build: ./frontend
+    container_name: creole-frontend
+    env_file: .env
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    command: npm start
+
+  nlp:
+    build: ./nlp
+    container_name: creole-nlp
+    env_file: .env
+    ports:
+      - "${NLP_PORT}:8000"
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
+    container_name: creole-keycloak
+    command: ["start-dev", "--import-realm"]
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HEALTH_ENABLED: true
     ports:
       - "8080:8080"
     volumes:
       - ./keycloak/realm-export:/opt/keycloak/data/import
-    command: start-dev --import-realm
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 60s
-    networks:
-      - creole-network
 
   minio:
     image: minio/minio:latest
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+    container_name: creole-minio
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
-    command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-    networks:
-      - creole-network
-
-  backend:
-    build: ./backend
-    ports:
-      - "${API_PORT}:4000"
-    environment:
-      NODE_ENV: development
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PORT: 5432
-      POSTGRES_HOST: ${POSTGRES_HOST}
-      API_PORT: ${API_PORT}
-      API_HOST: ${API_HOST}
-      API_CORS_ORIGIN: ${API_CORS_ORIGIN}
-      KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
-      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
-      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
-      NLP_HOST: ${NLP_HOST}
-      NLP_PORT: ${NLP_PORT}
-      ADMIN_EMAIL: ${ADMIN_EMAIL}
-      WEBHOOK_URL: ${WEBHOOK_URL}
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_PORT: ${SMTP_PORT}
-      SMTP_USER: ${SMTP_USER}
-      SMTP_PASS: ${SMTP_PASS}
-      SMTP_FROM: ${SMTP_FROM}
-      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
-      MINIO_PORT: ${MINIO_PORT}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_USE_SSL: ${MINIO_USE_SSL}
-      ANCHOR_URL: ${ANCHOR_URL}
-    depends_on:
-      db:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    networks:
-      - creole-network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-      KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
-      KEYCLOAK_FRONTEND_CLIENT_ID: ${KEYCLOAK_FRONTEND_CLIENT_ID}
-      KEYCLOAK_REDIRECT_URI: ${KEYCLOAK_REDIRECT_URI}
-      KEYCLOAK_POST_LOGOUT_REDIRECT: ${KEYCLOAK_POST_LOGOUT_REDIRECT}
-    depends_on:
-      - backend
-    networks:
-      - creole-network
-
-  nlp:
-    build: ./nlp
-    ports:
-      - "8000:8000"
-    environment:
-      HOST: 0.0.0.0
-      PORT: 8000
-    networks:
-      - creole-network
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  postgres_data:
+  db_data:
   minio_data:
-
-networks:
-  creole-network:
-    driver: bridge

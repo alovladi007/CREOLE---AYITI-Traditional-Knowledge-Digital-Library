@@ -1,146 +1,54 @@
 {
-  "id": "creole",
   "realm": "creole",
   "enabled": true,
-  "sslRequired": "external",
-  "registrationAllowed": false,
-  "loginWithEmailAllowed": true,
-  "duplicateEmailsAllowed": false,
-  "resetPasswordAllowed": true,
-  "editUsernameAllowed": false,
-  "bruteForceProtected": true,
-  "permanentLockout": false,
-  "maxFailureWaitSeconds": 900,
-  "minimumQuickLoginWaitSeconds": 60,
-  "waitIncrementSeconds": 60,
-  "quickLoginCheckMilliSeconds": 1000,
-  "maxDeltaTimeSeconds": 43200,
-  "failureFactor": 30,
   "roles": {
     "realm": [
-      {
-        "name": "admin",
-        "description": "Administrator role with full access",
-        "composite": false,
-        "clientRole": false
-      },
-      {
-        "name": "examiner",
-        "description": "Examiner role for reviewing records",
-        "composite": false,
-        "clientRole": false
-      },
-      {
-        "name": "community_user",
-        "description": "Community user role for basic access",
-        "composite": false,
-        "clientRole": false
-      }
+      {"name": "admin", "description": "CREOLE administrator"},
+      {"name": "examiner", "description": "Patent examiner"},
+      {"name": "community_user", "description": "Community contributor"}
     ]
   },
   "clients": [
     {
       "clientId": "creole-frontend",
-      "name": "CREOLE Frontend",
-      "description": "Next.js frontend application",
-      "enabled": true,
       "publicClient": true,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
-      "authorizationServicesEnabled": false,
-      "redirectUris": [
-        "http://localhost:3000/api/auth/callback"
-      ],
-      "webOrigins": [
-        "http://localhost:3000"
-      ],
-      "protocol": "openid-connect",
-      "attributes": {
-        "pkce.code.challenge.method": "S256"
-      },
-      "fullScopeAllowed": true
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
+      "attributes": {"pkce.code.challenge.method": "S256"}
     },
     {
       "clientId": "creole-backend",
-      "name": "CREOLE Backend",
-      "description": "NestJS backend API",
-      "enabled": true,
-      "publicClient": false,
-      "standardFlowEnabled": false,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": true,
       "secret": "backend-secret-please-change",
-      "redirectUris": [
-        "http://localhost:4000/*"
-      ],
-      "webOrigins": [
-        "http://localhost:4000"
-      ],
-      "protocol": "openid-connect",
-      "fullScopeAllowed": true
+      "serviceAccountsEnabled": true,
+      "bearerOnly": false,
+      "publicClient": false,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["http://localhost:4000/*"],
+      "webOrigins": ["*"]
     }
   ],
   "users": [
     {
       "username": "admin@creole",
-      "email": "admin@creole.local",
-      "emailVerified": true,
       "enabled": true,
-      "firstName": "Admin",
-      "lastName": "User",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "adminpass",
-          "temporary": false
-        }
-      ],
+      "email": "admin@example.com",
+      "credentials": [{"type": "password", "value": "adminpass"}],
       "realmRoles": ["admin"]
     },
     {
       "username": "examiner@creole",
-      "email": "examiner@creole.local",
-      "emailVerified": true,
       "enabled": true,
-      "firstName": "Examiner",
-      "lastName": "User",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "examinerpass",
-          "temporary": false
-        }
-      ],
+      "email": "examiner@example.com",
+      "credentials": [{"type": "password", "value": "examinerpass"}],
       "realmRoles": ["examiner"]
     },
     {
       "username": "user@creole",
-      "email": "user@creole.local",
-      "emailVerified": true,
       "enabled": true,
-      "firstName": "Community",
-      "lastName": "User",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "userpass",
-          "temporary": false
-        }
-      ],
+      "email": "user@example.com",
+      "credentials": [{"type": "password", "value": "userpass"}],
       "realmRoles": ["community_user"]
     }
-  ],
-  "defaultDefaultClientScopes": [
-    "profile",
-    "email",
-    "roles",
-    "web-origins"
-  ],
-  "defaultOptionalClientScopes": [
-    "offline_access"
   ]
 }

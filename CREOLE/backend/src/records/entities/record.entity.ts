@@ -1,44 +1,38 @@
-import { Entity, Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '../../common/base.entity';
-
-export type AccessTier = 'public' | 'restricted' | 'secret';
 
 @Entity('records')
 export class RecordEntity extends BaseEntity {
-  @Column()
+  @Column({ nullable: false })
   title_ht: string;
 
   @Column({ nullable: true })
-  title_fr?: string;
+  title_fr: string;
 
   @Column({ nullable: true })
-  abstract_en?: string;
+  abstract_en: string;
+
+  @Column({ nullable: false })
+  creole_class: string; // e.g., C-FOOD, C-MED
+
+  @Column({ type: 'jsonb', default: [] })
+  ipc_codes: string[];
+
+  @Column({ type: 'jsonb', default: [] })
+  tk_labels: string[];
+
+  @Column({ default: 'public' })
+  access_tier: 'public' | 'restricted' | 'secret';
+
+  @Column({ type: 'text', nullable: true })
+  examiner_digest: string | null;
 
   @Column({ nullable: true })
-  creole_class?: string; // e.g., C-FOOD, C-MED
+  community: string;
 
-  @Column('simple-array', { nullable: true })
-  ipc_codes?: string[];
+  @Column({ type: 'jsonb', default: [] })
+  region: string[];
 
-  @Column('simple-array', { nullable: true })
-  tk_labels?: string[];
-
-  @Column({
-    type: 'enum',
-    enum: ['public', 'restricted', 'secret'],
-    default: 'public',
-  })
-  access_tier: AccessTier;
-
-  @Column({ nullable: true })
-  examiner_digest?: string;
-
-  @Column({ nullable: true })
-  community?: string;
-
-  @Column('simple-array', { nullable: true })
-  region?: string[];
-
-  @Column('jsonb', { nullable: true })
-  metadata?: Record<string, any>;
+  @Column({ type: 'jsonb', nullable: true })
+  metadata: any;
 }
