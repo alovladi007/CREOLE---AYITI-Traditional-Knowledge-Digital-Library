@@ -1,67 +1,27 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AccessRequestEntity, RequestStatus } from './access-request.entity';
-import { RecordsService } from '../records/records.service';
+import { AccessRequestEntity } from './access-request.entity';
 
 @Injectable()
 export class AccessService {
-  constructor(
-    @InjectRepository(AccessRequestEntity)
-    private accessRepository: Repository<AccessRequestEntity>,
-    private recordsService: RecordsService,
-  ) {}
+  constructor(@InjectRepository(AccessRequestEntity) private repo: Repository<AccessRequestEntity>) {}
 
-  async createRequest(data: {
-    recordId: string;
-    requester: string;
-    purpose: string;
-    requested_fields?: string[];
-  }): Promise<AccessRequestEntity> {
-    // Verify record exists
-    const record = await this.recordsService.findOne(data.recordId);
-    
-    // Reject if record is public
-    if (record.access_tier === 'public') {
-      throw new BadRequestException('Access requests are not required for public records');
-    }
-
-    const request = this.accessRepository.create(data);
-    return await this.accessRepository.save(request);
+  create(data: Partial<AccessRequestEntity>) {
+    return this.repo.save(this.repo.create(data));
   }
 
-  async findPending(): Promise<AccessRequestEntity[]> {
-    return await this.accessRepository.find({
-      where: { status: 'pending' },
-      order: { createdAt: 'ASC' },
-    });
+  listInbox() {
+    return this.repo.find({ where: { status: 'pending' }, order: { createdAt: 'DESC' } });
   }
 
-  async findById(id: string): Promise<AccessRequestEntity> {
-    const request = await this.accessRepository.findOne({ where: { id } });
-    if (!request) {
-      throw new NotFoundException(`Access request ${id} not found`);
-    }
-    return request;
-  }
-
-  async updateStatus(
-    id: string,
-    status: RequestStatus,
-    decidedBy: string,
-    decisionNote?: string,
-  ): Promise<AccessRequestEntity> {
-    const request = await this.findById(id);
-    
-    if (request.status !== 'pending') {
-      throw new BadRequestException('Request has already been processed');
-    }
-
-    request.status = status;
-    request.decided_by = decidedBy;
-    request.decided_at = new Date();
-    request.decision_note = decisionNote;
-
-    return await this.accessRepository.save(request);
+  async decide(id: string, status: 'approved'|'denied', decidedBy: string, note?: string) {
+    const ar = await this.repo.findOne({ where: { id } });
+    if (!ar) return null;
+    ar.status = status;
+    ar.decided_by = decidedBy;
+    ar.decision_note = note || null;
+    ar.decided_at = new Date();
+    return this.repo.save(ar);
   }
 }

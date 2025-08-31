@@ -1,45 +1,52 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../app.module';
-import { LabelsService } from '../labels/labels.service';
-import { RecordsService } from '../records/records.service';
-import seedData from './data/seed-records.json';
+import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+import * as path from 'path';
+import * as fs from 'fs';
+import { config as dotenv } from 'dotenv';
+import { RecordEntity } from '../records/entities/record.entity';
+import { LabelEntity } from '../labels/entities/label.entity';
+import { ConsentEntity } from '../consents/entities/consent.entity';
+import { AccessRequestEntity } from '../access/access-request.entity';
+import { MediaEntity } from '../media/media.entity';
+import { AuditLogEntity } from '../audit/audit.entity';
+import { BenefitContractEntity, PayoutEntity } from '../benefit/benefit.entities';
 
-async function seed() {
-  const app = await NestFactory.createApplicationContext(AppModule);
-  
-  const labelsService = app.get(LabelsService);
-  const recordsService = app.get(RecordsService);
+dotenv();
 
-  console.log('Seeding TK Labels...');
-  
+const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.POSTGRES_HOST || 'localhost',
+  port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
+  username: process.env.POSTGRES_USER || 'creole',
+  password: process.env.POSTGRES_PASSWORD || 'creolepass',
+  database: process.env.POSTGRES_DB || 'creole',
+  entities: [RecordEntity, LabelEntity, ConsentEntity, AccessRequestEntity, MediaEntity, AuditLogEntity, BenefitContractEntity, PayoutEntity],
+  synchronize: true,
+});
+
+async function run() {
+  await AppDataSource.initialize();
+  const recordRepo = AppDataSource.getRepository(RecordEntity);
+  const labelRepo = AppDataSource.getRepository(LabelEntity);
+
   const labels = [
-    { code: 'TK_Attribution', description: 'This label should be used when a community has an attribution interest.' },
-    { code: 'TK_NonCommercial', description: 'This label should be used when a community has restrictions on commercial use.' },
-    { code: 'TK_NoDerivatives', description: 'This label should be used when a community wants to prevent derivative works.' },
-    { code: 'TK_CulturallySensitive', description: 'This label indicates culturally sensitive traditional knowledge.' },
-    { code: 'TK_Secret', description: 'This label indicates secret/sacred traditional knowledge.' },
+    { code: 'TK_Attribution', description: 'Use requires attribution to community/holders.' },
+    { code: 'TK_NonCommercial', description: 'Use for non-commercial purposes only.' },
   ];
-
-  for (const label of labels) {
-    const existing = await labelsService.findByCode(label.code);
-    if (!existing) {
-      await labelsService.create(label.code, label.description);
-      console.log(`Created label: ${label.code}`);
-    }
+  for (const l of labels) {
+    const exists = await labelRepo.findOne({ where: { code: l.code } });
+    if (!exists) await labelRepo.save(labelRepo.create(l));
   }
 
-  console.log('Seeding example records...');
-  
-  for (const record of seedData.records) {
-    await recordsService.create(record as any);
-    console.log(`Created record: ${record.title_ht}`);
-  }
+  const seedPath = path.join(__dirname, 'data', 'seed-records.json');
+  const json = JSON.parse(fs.readFileSync(seedPath, 'utf-8'));
 
-  console.log('Seeding completed successfully!');
-  await app.close();
+  for (const r of json) {
+    const exists = await recordRepo.findOne({ where: { title_ht: r.title_ht, creole_class: r.creole_class } });
+    if (!exists) await recordRepo.save(recordRepo.create(r));
+  }
+  console.log('Seed complete.');
+  process.exit(0);
 }
 
-seed().catch((error) => {
-  console.error('Seeding failed:', error);
-  process.exit(1);
-});
+run().catch((e) => { console.error(e); process.exit(1); });

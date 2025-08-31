@@ -1,53 +1,45 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../common/base.entity';
-
-export type ContractStatus = 'draft' | 'active' | 'suspended' | 'terminated';
-export type PayoutStatus = 'pending' | 'sent' | 'failed';
+import { RecordEntity } from '../records/entities/record.entity';
 
 @Entity('benefit_contracts')
 export class BenefitContractEntity extends BaseEntity {
-  @Column({ nullable: true })
-  recordId?: string;
+  @ManyToOne(() => RecordEntity, { onDelete: 'SET NULL', nullable: true })
+  record: RecordEntity | null;
 
-  @Column()
+  @Column({ nullable: true }) 
+  recordId: string;
+
+  @Column() 
   community: string;
 
-  @Column('jsonb')
-  terms: Record<string, any>;
+  @Column({ type: 'jsonb' }) 
+  terms: any;
 
-  @Column({ nullable: true })
-  payout_address?: string;
+  @Column({ nullable: true }) 
+  payout_address: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['draft', 'active', 'suspended', 'terminated'],
-    default: 'draft',
-  })
-  status: ContractStatus;
+  @Column({ default: 'draft' }) 
+  status: 'draft'|'active'|'suspended'|'terminated';
 }
 
 @Entity('payouts')
 export class PayoutEntity extends BaseEntity {
   @ManyToOne(() => BenefitContractEntity, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'contractId' })
   contract: BenefitContractEntity;
 
-  @Column()
+  @Column() 
   contractId: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 12, scale: 2 }) 
   amount: number;
 
-  @Column({ default: 'USD' })
+  @Column({ default: 'USD' }) 
   currency: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['pending', 'sent', 'failed'],
-    default: 'pending',
-  })
-  status: PayoutStatus;
+  @Column({ default: 'pending' }) 
+  status: 'pending'|'sent'|'failed';
 
-  @Column({ nullable: true })
-  txref?: string;
+  @Column({ nullable: true }) 
+  txref: string;
 }

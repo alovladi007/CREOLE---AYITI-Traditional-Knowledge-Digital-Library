@@ -1,164 +1,108 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as Minio from 'minio';
+import { Client as MinioClient } from 'minio';
 import * as crypto from 'crypto';
-import axios from 'axios';
 import { MediaEntity } from './media.entity';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class MediaService {
-  private minioClient: Minio.Client;
+  private minio: MinioClient;
   private bucket: string;
 
-  constructor(
-    @InjectRepository(MediaEntity)
-    private mediaRepository: Repository<MediaEntity>,
-  ) {
-    this.minioClient = new Minio.Client({
-      endPoint: process.env.MINIO_ENDPOINT || 'minio',
-      port: parseInt(process.env.MINIO_PORT || '9000'),
-      useSSL: process.env.MINIO_USE_SSL === 'true',
-      accessKey: process.env.MINIO_ACCESS_KEY || 'creoleminio',
-      secretKey: process.env.MINIO_SECRET_KEY || 'creoleminio123',
-    });
-    
+  constructor(@InjectRepository(MediaEntity) private repo: Repository<MediaEntity>) {
+    const endPoint = process.env.MINIO_ENDPOINT || 'minio';
+    const port = parseInt(process.env.MINIO_PORT || '9000', 10);
+    const useSSL = (process.env.MINIO_USE_SSL || 'false') === 'true';
+    const accessKey = process.env.MINIO_ACCESS_KEY || 'creoleminio';
+    const secretKey = process.env.MINIO_SECRET_KEY || 'creoleminio123';
     this.bucket = process.env.MINIO_BUCKET || 'creole-media';
-    this.ensureBucket();
-  }
 
-  private async ensureBucket() {
-    try {
-      const exists = await this.minioClient.bucketExists(this.bucket);
-      if (!exists) {
-        await this.minioClient.makeBucket(this.bucket, 'us-east-1');
-        console.log(`Created MinIO bucket: ${this.bucket}`);
+    this.minio = new MinioClient({ endPoint, port, useSSL, accessKey, secretKey });
+
+    // Ensure bucket exists
+    this.minio.bucketExists(this.bucket, (err, exists) => {
+      if (err) { 
+        console.error('MinIO check bucket error', err); 
+        return; 
       }
-    } catch (error) {
-      console.error('Error ensuring MinIO bucket:', error);
-    }
+      if (!exists) {
+        this.minio.makeBucket(this.bucket, '', err2 => {
+          if (err2) console.error('MinIO make bucket error', err2);
+          else console.log('MinIO bucket created:', this.bucket);
+        });
+      }
+    });
   }
 
-  async uploadBuffer(
-    buffer: Buffer,
-    filename: string,
-    mimetype: string,
-    recordId?: string,
-  ): Promise<MediaEntity> {
-    const key = `${uuidv4()}-${filename}`;
-    const sha256 = crypto.createHash('sha256').update(buffer).digest('hex');
+  async uploadBuffer(buf: Buffer, filename: string, mimetype: string, recordId?: string) {
+    const sha256 = crypto.createHash('sha256').update(buf).digest('hex');
+    const key = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}-${filename}`;
+    await this.minio.putObject(this.bucket, key, buf, { 'Content-Type': mimetype, 'x-amz-meta-sha256': sha256 });
 
-    // Upload to MinIO
-    await this.minioClient.putObject(
-      this.bucket,
-      key,
-      buffer,
-      buffer.length,
-      { 'Content-Type': mimetype },
-    );
-
-    // Save metadata
-    const media = this.mediaRepository.create({
-      recordId,
-      key,
-      filename,
-      mimetype,
-      size: buffer.length,
-      sha256,
-      redaction_status: 'none',
+    const media = this.repo.create({
+      key, 
+      filename, 
+      mimetype, 
+      size: buf.length, 
+      sha256, 
+      recordId: recordId || null,
+      redaction_status: mimetype.startsWith('text/') ? 'pending' : 'none'
     });
+    return this.repo.save(media);
+  }
 
-    const saved = await this.mediaRepository.save(media);
+  async presignGetUrl(key: string) {
+    return new Promise<string>((resolve, reject) => {
+      this.minio.presignedGetObject(this.bucket, key, 60*10, (err, url) => {
+        if (err) reject(err); 
+        else resolve(url);
+      });
+    });
+  }
 
-    // Trigger redaction if text file
-    if (mimetype.startsWith('text/')) {
-      await this.redactAfterUpload(saved);
-    }
-
-    return saved;
+  private nlpUrl(): string {
+    const host = process.env.NLP_HOST || 'nlp';
+    const port = process.env.NLP_PORT || '8000';
+    return `http://${host}:${port}`;
   }
 
   async getObjectBuffer(key: string): Promise<Buffer> {
-    const stream = await this.minioClient.getObject(this.bucket, key);
-    const chunks: Buffer[] = [];
-    
-    return new Promise((resolve, reject) => {
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-      stream.on('error', reject);
+    return await new Promise((resolve, reject) => {
+      this.minio.getObject(this.bucket, key, (err, dataStream) => {
+        if (err) return reject(err);
+        const chunks: Buffer[] = [];
+        dataStream.on('data', (chunk) => chunks.push(Buffer.isBuffer(chunk)?chunk:Buffer.from(chunk)));
+        dataStream.on('end', () => resolve(Buffer.concat(chunks)));
+        dataStream.on('error', (e) => reject(e));
+      });
     });
   }
 
-  async presignGetUrl(key: string): Promise<string> {
-    return await this.minioClient.presignedGetObject(this.bucket, key, 10 * 60); // 10 minutes
-  }
-
-  private async redactAfterUpload(media: MediaEntity): Promise<void> {
+  async redactAfterUpload(saved: MediaEntity) {
     try {
-      media.redaction_status = 'pending';
-      await this.mediaRepository.save(media);
-
-      // Get original content
-      const buffer = await this.getObjectBuffer(media.key);
-      const text = buffer.toString('utf-8');
-
-      // Call NLP service
-      const nlpUrl = `http://${process.env.NLP_HOST || 'nlp'}:${process.env.NLP_PORT || 8000}`;
-      const response = await axios.post(`${nlpUrl}/redact_text`, {
-        text,
-        extra_terms: [],
-      });
-
-      const redactedText = response.data.redacted_text;
-      const redactedBuffer = Buffer.from(redactedText, 'utf-8');
-
-      // Upload redacted version
-      const redactedKey = media.key.replace(/(\.[^.]+)$/, '-redacted$1');
-      await this.minioClient.putObject(
-        this.bucket,
-        redactedKey,
-        redactedBuffer,
-        redactedBuffer.length,
-        { 'Content-Type': 'text/plain' },
-      );
-
-      // Update media entity
-      media.redaction_status = 'redacted';
-      media.redaction_meta = {
-        redacted_key: redactedKey,
-        masked_count: response.data.masked_count || 0,
-      };
-      await this.mediaRepository.save(media);
-
-      console.log(`Redacted text file: ${media.key} -> ${redactedKey}`);
-    } catch (error) {
-      console.error('Error redacting text:', error);
-      media.redaction_status = 'none';
-      await this.mediaRepository.save(media);
-    }
-  }
-
-  async redactImage(imageBuffer: Buffer, regions: any[]): Promise<Buffer> {
-    try {
-      const nlpUrl = `http://${process.env.NLP_HOST || 'nlp'}:${process.env.NLP_PORT || 8000}`;
-      
-      const formData = new FormData();
-      const blob = new Blob([imageBuffer]);
-      formData.append('file', blob);
-      formData.append('regions', JSON.stringify(regions));
-
-      const response = await axios.post(`${nlpUrl}/redact_image`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        responseType: 'json',
-      });
-
-      return Buffer.from(response.data.image_base64, 'base64');
-    } catch (error) {
-      console.error('Error redacting image:', error);
-      throw error;
+      const mime = saved.mimetype || '';
+      // Text redaction
+      if (mime.startsWith('text/')) {
+        const buf = await this.getObjectBuffer(saved.key);
+        const text = buf.toString('utf8');
+        const res = await fetch(this.nlpUrl() + '/redact_text', {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json' },
+          body: JSON.stringify({ text })
+        } as any);
+        if (res.ok) {
+          const j:any = await res.json();
+          const redacted = Buffer.from(j.redacted, 'utf8');
+          const redKey = saved.key.replace(/(\.[^.]+)?$/, '-redacted.txt');
+          await this.minio.putObject(this.bucket, redKey, redacted, { 'Content-Type': 'text/plain' });
+          saved.redaction_status = 'redacted';
+          saved.redaction_meta = { redacted_key: redKey, strategy: 'pii+terms' };
+          await this.repo.save(saved);
+        }
+      }
+    } catch (e) {
+      console.error('redactAfterUpload error', e);
     }
   }
 }

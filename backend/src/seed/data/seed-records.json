@@ -1,36 +1,28 @@
-{
-  "records": [
-    {
-      "title_ht": "Sòs Pwa Joumou",
-      "title_fr": "Soupe au Giraumon",
-      "abstract_en": "Traditional Haitian pumpkin soup prepared on January 1st to commemorate independence. This soup represents freedom and is shared among family and visitors.",
-      "creole_class": "C-FOOD",
-      "ipc_codes": ["A23L"],
-      "tk_labels": ["TK_Attribution", "TK_CulturallySensitive"],
-      "access_tier": "public",
-      "community": "National Heritage",
-      "region": ["Ouest", "Nord", "Sud"],
-      "metadata": {
-        "preparation_time": "4-6 hours",
-        "main_ingredients": ["joumou", "beef", "vegetables", "pasta"],
-        "cultural_significance": "Symbol of Haitian independence and freedom"
-      }
-    },
-    {
-      "title_ht": "Kasav",
-      "title_fr": "Cassave",
-      "abstract_en": "Traditional flatbread made from cassava (manioc) root, an indigenous staple food with pre-Columbian origins.",
-      "creole_class": "C-FOOD",
-      "ipc_codes": ["A21D"],
-      "tk_labels": ["TK_Attribution"],
-      "access_tier": "public",
-      "community": "Artibonite Communities",
-      "region": ["Artibonite", "Centre"],
-      "metadata": {
-        "preparation_method": "grating, pressing, drying, cooking",
-        "tools": "traditional grater, press, griddle",
-        "variations": ["kasav dous", "kasav sal"]
-      }
-    }
-  ]
-}
+[
+  {
+    "title_ht": "Sopi Joumou",
+    "title_fr": "Soupe Joumou",
+    "abstract_en": "Haitian pumpkin soup prepared on January 1st celebrating independence; ingredients and preparation methods as cultural heritage.",
+    "creole_class": "C-FOOD",
+    "ipc_codes": ["A23L33/10"],
+    "tk_labels": ["TK_Attribution","TK_NonCommercial"],
+    "access_tier": "public",
+    "examiner_digest": "Documented community practice with long-standing use; ingredients & steps widely published; serves as prior art for food preparation claims.",
+    "community": "Ouest/Artibonite",
+    "region": ["Ouest","Artibonite"],
+    "metadata": {"source": "UNESCO listing context; community narratives"}
+  },
+  {
+    "title_ht": "Kasav tradisyonèl",
+    "title_fr": "Pain de manioc (Kasav)",
+    "abstract_en": "Traditional cassava bread knowledge and practices including grating, pressing, and baking on a flat griddle.",
+    "creole_class": "C-FOOD",
+    "ipc_codes": ["A23L7/113"],
+    "tk_labels": ["TK_Attribution","TK_NonCommercial"],
+    "access_tier": "public",
+    "examiner_digest": "Long-standing practice across regions; documented as intangible heritage; prior art for starch processing and baking methods.",
+    "community": "Nord-Est/Sud-Est",
+    "region": ["Nord-Est","Sud-Est"],
+    "metadata": {"source": "Community inventories; museum notes"}
+  }
+]

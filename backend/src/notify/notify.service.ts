@@ -1,59 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-import axios from 'axios';
 
 @Injectable()
 export class NotifyService {
   private transporter: nodemailer.Transporter | null = null;
+  private webhookUrl: string | undefined;
 
   constructor() {
-    if (process.env.SMTP_HOST) {
+    this.webhookUrl = process.env.WEBHOOK_URL || undefined;
+    const host = process.env.SMTP_HOST;
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+    if (host && user && pass) {
       this.transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587'),
+        host,
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
         secure: false,
-        auth: process.env.SMTP_USER ? {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        } : undefined,
+        auth: { user, pass }
       });
     }
   }
 
-  async sendEmail(to: string, subject: string, text: string): Promise<void> {
-    if (!this.transporter) {
-      console.log(`[EMAIL STUB] To: ${to}, Subject: ${subject}, Text: ${text}`);
-      return;
+  async sendEmail(to: string, subject: string, text: string) {
+    if (!this.transporter) { 
+      console.log('[email stub]', to, subject); 
+      return; 
     }
-
-    try {
-      await this.transporter.sendMail({
-        from: process.env.SMTP_FROM || 'CREOLE <no-reply@creole.local>',
-        to,
-        subject,
-        text,
-      });
-      console.log(`Email sent to ${to}: ${subject}`);
-    } catch (error) {
-      console.error('Error sending email:', error);
-    }
+    await this.transporter.sendMail({
+      from: process.env.SMTP_FROM || 'CREOLE <no-reply@creole.local>',
+      to,
+      subject,
+      text
+    });
   }
 
-  async sendWebhook(event: string, data: any): Promise<void> {
-    if (!process.env.WEBHOOK_URL) {
-      console.log(`[WEBHOOK STUB] Event: ${event}, Data:`, JSON.stringify(data));
-      return;
+  async webhook(payload: any) {
+    if (!this.webhookUrl) { 
+      console.log('[webhook stub]', payload); 
+      return; 
     }
-
-    try {
-      await axios.post(process.env.WEBHOOK_URL, {
-        event,
-        timestamp: new Date().toISOString(),
-        data,
-      });
-      console.log(`Webhook sent: ${event}`);
-    } catch (error) {
-      console.error('Error sending webhook:', error);
-    }
+    await fetch(this.webhookUrl, { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify(payload) 
+    });
   }
 }

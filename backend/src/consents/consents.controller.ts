@@ -1,14 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
-import { Roles } from 'nest-keycloak-connect';
 import { ConsentsService } from './consents.service';
+import { Roles } from 'nest-keycloak-connect';
 
-@Controller('consents')
+@Controller('v1/consents')
 export class ConsentsController {
-  constructor(private readonly consentsService: ConsentsService) {}
-
-  @Get()
-  @Roles({ roles: ['examiner', 'admin'] })
-  async findAll() {
-    return await this.consentsService.findAll();
+  constructor(private readonly service: ConsentsService) {}
+  
+  @Get() 
+  @Roles({ roles: ['admin', 'examiner'] })
+  list() { 
+    return this.service.findAll(); 
   }
 }

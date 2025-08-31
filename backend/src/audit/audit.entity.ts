@@ -1,20 +1,20 @@
-import { Entity, Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '../common/base.entity';
 
 @Entity('audit_logs')
 export class AuditLogEntity extends BaseEntity {
-  @Column()
+  @Column() 
   actor: string;
 
-  @Column()
+  @Column() 
   action: string;
 
-  @Column('jsonb', { nullable: true })
-  details?: Record<string, any>;
+  @Column({ type: 'jsonb', nullable: true }) 
+  details: any;
 
-  @Column({ nullable: true })
-  prev_hash?: string;
+  @Column({ nullable: true }) 
+  prev_hash: string;
 
-  @Column()
+  @Column() 
   hash: string;
 }
