@@ -1,110 +1,155 @@
-# CREOLE - Center for Research in Ethnoscience, Orality, Language & Education
+# CREOLE — Center for Research in Ethnoscience, Orality, Language & Education
 
-A TKDL-style platform to document and protect Haitian traditional knowledge with comprehensive access controls, benefit-sharing, and audit capabilities.
+Traditional Knowledge Digital Library (TKDL-style) platform for documenting and protecting Haitian traditional knowledge and cultural expressions.
 
-## Services & Ports
+## 🏗️ Architecture
 
-- **Frontend (Next.js 14)**: http://localhost:3000
-- **Backend API (NestJS)**: http://localhost:4000
-- **Keycloak**: http://localhost:8080 (Admin: admin/admin)
-- **MinIO Console**: http://localhost:9001 (Access: creoleminio/creoleminio123)
-- **MinIO API**: http://localhost:9000
-- **NLP Service**: http://localhost:8000
-- **PostgreSQL**: localhost:5432
+- **Backend**: NestJS + TypeORM + PostgreSQL
+- **Frontend**: Next.js 14 (App Router) with SSR
+- **Auth**: Keycloak OIDC with PKCE flow
+- **Storage**: MinIO for media files
+- **NLP**: FastAPI service for text/image redaction
+- **Containerization**: Docker Compose orchestration
 
-## Quick Start
+## 🚀 Quick Start
 
+1. **Setup environment**:
 ```bash
-# 1. Copy environment configuration
 cp .env.example .env
+```
 
-# 2. Start all services
+2. **Start all services**:
+```bash
 docker compose up --build
+```
 
-# 3. Wait for services to be healthy (check docker compose ps)
-
-# 4. Seed the database with initial data
+3. **Seed initial data** (after services are healthy):
+```bash
 docker compose exec backend npm run seed
 ```
 
-## Demo Users
+## 🌐 Service URLs
 
-Login at http://localhost:3000:
+- **Frontend**: http://localhost:3000
+- **API**: http://localhost:4000/health
+- **Keycloak**: http://localhost:8080 (admin/admin)
+- **MinIO Console**: http://localhost:9001
+- **NLP Service**: http://localhost:8000/health
 
-- **Admin**: admin@creole / adminpass (role: admin)
-- **Examiner**: examiner@creole / examinerpass (role: examiner)
-- **Community User**: user@creole / userpass (role: community_user)
+## 👥 Demo Users
 
-## Using the Application
+- **Admin**: `admin@creole` / `adminpass` (role: admin)
+- **Examiner**: `examiner@creole` / `examinerpass` (role: examiner)
+- **User**: `user@creole` / `userpass` (role: community_user)
 
-### Basic Workflow
+## ✨ Key Features
 
-1. **Sign In**: Click "Sign in" in the toolbar → authenticate via Keycloak
-2. **Browse Records**: Search and view traditional knowledge records from the home page
-3. **Submit New Records**: Use the Intake page to submit new records (requires authentication)
-4. **Request Access**: For restricted/secret records, submit an access request
-5. **Admin Functions**: 
-   - Review access requests in Admin Inbox
-   - Manage benefit-sharing contracts and payouts
+### Authentication & Authorization
+- OIDC PKCE flow with Keycloak
+- Role-based access control (admin, examiner, community_user)
+- HTTP-only session cookies for security
 
-### Key Features
+### Traditional Knowledge Management
+- Records with multilingual support (Haitian Creole, French, English)
+- Classification system (C-FOOD, C-MED, C-RIT, C-MUS, C-CRAFT, C-AGRI, C-ORAL, C-EDU)
+- TK/BC Labels for culturally appropriate access control
+- Access tiers: public, restricted, secret
 
-- **OIDC Authentication**: Secure PKCE flow with Keycloak
-- **Access Tiers**: Public, Restricted, and Secret record classifications
-- **Media Management**: File uploads with automatic SHA-256 hashing
-- **Text Redaction**: Automatic redaction of sensitive information in text files
-- **Image Redaction**: Manual region-based blurring for images
-- **Audit Trail**: Hash-chained audit log with optional external anchoring
-- **Benefit Sharing**: Contract management and payout tracking
+### Access Control
+- Access requests for restricted/secret records
+- Admin approval workflow with notifications
+- Audit trail with hash-chaining for tamper evidence
 
-### API Endpoints
+### Media & Redaction
+- SHA-256 hashing for all uploads
+- Automatic text redaction (PII, sacred terms)
+- Image redaction with region-based blurring
+- MinIO storage with presigned URLs
 
-- Health Check: `GET http://localhost:4000/health`
-- Records: `GET/POST http://localhost:4000/v1/records`
-- Labels: `GET http://localhost:4000/v1/labels`
-- Access Requests: `POST/GET/PATCH http://localhost:4000/v1/access-requests`
-- Media: `POST/GET http://localhost:4000/v1/media`
-- Contracts: `GET/POST http://localhost:4000/v1/benefit/contracts`
+### Benefit Sharing
+- Contract management for communities
+- Payout tracking and administration
+- Terms negotiation support
 
-## Audit Anchoring
+### Notifications & Monitoring
+- Email notifications (SMTP)
+- Webhook integrations
+- Audit log with optional external anchoring
 
-The system supports external audit anchoring via the `ANCHOR_URL` environment variable. 
-To enable:
+## 📝 Usage Guide
 
-1. Set `ANCHOR_URL` to your immudb/notary HTTP endpoint
-2. The system will POST audit hashes: `{hash: string, ts: number}`
-3. If not configured, hashes are logged to `/tmp/creole-anchor.log`
+### 1. Sign In
+Click "Sign in" in the toolbar → authenticate with Keycloak using demo credentials
 
-## Development
+### 2. Submit Traditional Knowledge
+- Navigate to "Intake" to submit new records
+- Choose appropriate classification and access tier
+- Add TK Labels for usage restrictions
 
-### Running Tests
+### 3. Request Access (for restricted content)
+- Find a restricted/secret record
+- Submit access request with justification
+- Admin reviews and approves/denies
 
+### 4. Admin Functions
+- **Access Requests**: Review pending requests at `/dashboard/requests`
+- **Contracts**: Manage benefit-sharing at `/admin/contracts`
+- **Media**: Uploaded text files are auto-redacted
+
+### 5. Media Upload & Redaction
+- Upload files via API or forms
+- Text files: automatically redacted (emails, phones, sacred terms)
+- Images: manual redaction via region selection
+
+## 🔐 Security Features
+
+- **Hash-chained audit log**: Tamper-evident record of all actions
+- **External anchoring**: Optional integration with immudb/notary services
+- **SHA-256 verification**: All media files are hashed
+- **Redaction pipeline**: Automatic PII and sacred content protection
+
+## 🧪 Testing
+
+Run Playwright E2E tests:
 ```bash
-# Playwright E2E tests
 docker compose exec frontend npm run test:e2e
 ```
 
-### Accessing Services Directly
+## 🔧 Configuration
 
-- PostgreSQL: `docker compose exec db psql -U creole -d creole`
-- MinIO Shell: `docker compose exec minio sh`
-- Backend Shell: `docker compose exec backend sh`
+### Audit Anchoring
+Set `ANCHOR_URL` in `.env` to point to an external notary service (e.g., immudb) for additional tamper protection.
 
-## Architecture
+### SMTP Email
+Configure SMTP settings in `.env` for email notifications. Falls back to console logging if not configured.
 
-```
-┌─────────────┐     ┌──────────────┐     ┌────────────┐
-│   Next.js   │────▶│   NestJS     │────▶│ PostgreSQL │
-│   Frontend  │     │   Backend    │     └────────────┘
-└─────────────┘     └──────────────┘            │
-       │                    │                    │
-       ▼                    ▼                    ▼
-┌─────────────┐     ┌──────────────┐     ┌────────────┐
-│  Keycloak   │     │    MinIO     │     │    NLP     │
-│    OIDC     │     │   Storage    │     │  Service   │
-└─────────────┘     └──────────────┘     └────────────┘
-```
+### Webhook Notifications
+Set `WEBHOOK_URL` to receive JSON payloads for system events.
 
-## License
+## 📦 Development Notes
 
-Proprietary - All rights reserved
+- TypeORM uses `synchronize: true` in dev mode (disable for production)
+- Keycloak realm is auto-imported from `keycloak/realm-export/creole-realm.json`
+- MinIO bucket is auto-created on first startup
+- NLP service includes demo redaction rules (extend as needed)
+
+## 🌍 Roadmap
+
+- [ ] Production migrations system
+- [ ] Enhanced IPC patent classification mapping
+- [ ] Multi-language NLP models
+- [ ] Blockchain anchoring integration
+- [ ] Community governance dashboard
+- [ ] Mobile application
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file for details
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📞 Support
+
+For questions and support, please open an issue in the GitHub repository.
