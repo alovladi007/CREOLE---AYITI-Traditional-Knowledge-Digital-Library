@@ -25,7 +25,7 @@ export class AccessRequestEntity extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   decision_note: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   decided_by: string | null;
 
   @Column({ type: 'timestamptz', nullable: true })
