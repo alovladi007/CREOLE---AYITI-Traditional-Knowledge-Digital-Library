@@ -35,7 +35,7 @@ export class MediaService {
     });
   }
 
-  async uploadBuffer(buf: Buffer, filename: string, mimetype: string, recordId?: string) {
+  async uploadBuffer(buf: Buffer, filename: string, mimetype: string, recordId?: string): Promise<MediaEntity> {
     const sha256 = crypto.createHash('sha256').update(buf).digest('hex');
     const key = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}-${filename}`;
     await this.minio.putObject(this.bucket, key, buf, { 'Content-Type': mimetype, 'x-amz-meta-sha256': sha256 });
@@ -46,10 +46,12 @@ export class MediaService {
       mimetype, 
       size: buf.length, 
       sha256, 
-      recordId: recordId || null,
+      recordId: recordId ?? null,
       redaction_status: mimetype.startsWith('text/') ? 'pending' : 'none'
     });
-    return this.repo.save(media);
+    const saved = await this.repo.save(media);
+    // Ensure we return a single entity, not an array
+    return Array.isArray(saved) ? saved[0] : saved;
   }
 
   async presignGetUrl(key: string) {
