@@ -23,7 +23,7 @@
     "class-transformer": "^0.5.1",
     "dotenv": "^16.4.5",
     "keycloak-connect": "^21.1.1",
-    "nest-keycloak-connect": "^2.5.1",
+    "nest-keycloak-connect": "^1.9.5",
     "express-session": "^1.17.3",
     "nodemailer": "^6.9.12",
     "minio": "^7.1.3",
