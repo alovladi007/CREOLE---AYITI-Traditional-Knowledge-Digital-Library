@@ -5,23 +5,18 @@ import { LabelEntity } from './entities/label.entity';
 
 @Injectable()
 export class LabelsService {
-  constructor(
-    @InjectRepository(LabelEntity)
-    private labelsRepository: Repository<LabelEntity>,
-  ) {}
-
-  async findAll(): Promise<LabelEntity[]> {
-    return await this.labelsRepository.find({
-      order: { code: 'ASC' },
-    });
+  constructor(@InjectRepository(LabelEntity) private repo: Repository<LabelEntity>) {}
+  
+  list() { 
+    return this.repo.find({ order: { code: 'ASC' } }); 
   }
 
   async create(code: string, description?: string): Promise<LabelEntity> {
-    const label = this.labelsRepository.create({ code, description });
-    return await this.labelsRepository.save(label);
+    const label = this.repo.create({ code, description });
+    return await this.repo.save(label);
   }
 
   async findByCode(code: string): Promise<LabelEntity | null> {
-    return await this.labelsRepository.findOne({ where: { code } });
+    return await this.repo.findOne({ where: { code } });
   }
 }

@@ -1,40 +1,27 @@
-import { Controller, Get, Post, Body, Param, Query, Request } from '@nestjs/common';
-import { Roles, Public } from 'nest-keycloak-connect';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { SearchRecordsDto } from './dto/search-records.dto';
-import { AuditService } from '../audit/audit.service';
+import { Public } from 'nest-keycloak-connect';
 
-@Controller('records')
+@Controller('v1/records')
 export class RecordsController {
-  constructor(
-    private readonly recordsService: RecordsService,
-    private readonly auditService: AuditService,
-  ) {}
+  constructor(private readonly service: RecordsService) {}
 
   @Post()
-  @Roles({ roles: ['community_user', 'examiner', 'admin'] })
-  async create(@Body() createRecordDto: CreateRecordDto, @Request() req) {
-    const record = await this.recordsService.create(createRecordDto);
-    
-    await this.auditService.append(
-      req.user?.preferred_username || 'system',
-      'record.create',
-      { recordId: record.id, title: record.title_ht }
-    );
-    
-    return record;
+  create(@Body() dto: CreateRecordDto) {
+    return this.service.create(dto);
   }
 
   @Get()
   @Public()
-  async findAll(@Query() searchDto: SearchRecordsDto) {
-    return await this.recordsService.findAll(searchDto);
+  findAll(@Query() query: SearchRecordsDto) {
+    return this.service.findAll(query);
   }
 
   @Get(':id')
   @Public()
-  async findOne(@Param('id') id: string) {
-    return await this.recordsService.findOne(id);
+  findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
   }
 }

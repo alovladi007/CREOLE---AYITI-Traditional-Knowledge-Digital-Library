@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { KeycloakConnectModule, ResourceGuard, RoleGuard, AuthGuard } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
-
-import { HealthModule } from './misc/health.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecordsModule } from './records/records.module';
-import { LabelsModule } from './labels/labels.module';
 import { ConsentsModule } from './consents/consents.module';
+import { LabelsModule } from './labels/labels.module';
+import { HealthModule } from './misc/health.module';
 import { AccessModule } from './access/access.module';
 import { MediaModule } from './media/media.module';
 import { AuditModule } from './audit/audit.module';
@@ -15,49 +14,42 @@ import { BenefitModule } from './benefit/benefit.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
+    KeycloakConnectModule.registerAsync({
+      useFactory: (config: ConfigService) => ({
+        authServerUrl: config.get('KEYCLOAK_URL') || 'http://localhost:8080',
+        realm: config.get('KEYCLOAK_REALM') || 'creole',
+        clientId: config.get('KEYCLOAK_CLIENT_ID') || 'creole-backend',
+        secret: config.get('KEYCLOAK_CLIENT_SECRET') || 'backend-secret-please-change',
+      }),
+      inject: [ConfigService]
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.POSTGRES_HOST || 'localhost',
-      port: parseInt(process.env.POSTGRES_PORT || '5432'),
-      username: process.env.POSTGRES_USER || 'creole',
-      password: process.env.POSTGRES_PASSWORD || 'creolepass',
-      database: process.env.POSTGRES_DB || 'creole',
-      autoLoadEntities: true,
-      synchronize: true, // Only for development
-      logging: false,
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get('POSTGRES_HOST', 'localhost'),
+        port: parseInt(config.get('POSTGRES_PORT', '5432'), 10),
+        username: config.get('POSTGRES_USER', 'creole'),
+        password: config.get('POSTGRES_PASSWORD', 'creolepass'),
+        database: config.get('POSTGRES_DB', 'creole'),
+        autoLoadEntities: true,
+        synchronize: true, // dev only
+      }),
+      inject: [ConfigService],
     }),
-    KeycloakConnectModule.register({
-      authServerUrl: process.env.KEYCLOAK_URL || 'http://localhost:8080',
-      realm: process.env.KEYCLOAK_REALM || 'creole',
-      clientId: process.env.KEYCLOAK_CLIENT_ID || 'creole-backend',
-      secret: process.env.KEYCLOAK_CLIENT_SECRET || 'backend-secret-please-change',
-      bearerOnly: true,
-    }),
-    HealthModule,
     RecordsModule,
-    LabelsModule,
     ConsentsModule,
+    LabelsModule,
+    HealthModule,
     AccessModule,
     MediaModule,
     AuditModule,
-    BenefitModule,
+    BenefitModule
   ],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ResourceGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RoleGuard,
-    },
-  ],
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: ResourceGuard },
+    { provide: APP_GUARD, useClass: RoleGuard },
+  ]
 })
 export class AppModule {}

@@ -1,66 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, ILike } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { RecordEntity } from './entities/record.entity';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { SearchRecordsDto } from './dto/search-records.dto';
 
 @Injectable()
 export class RecordsService {
-  constructor(
-    @InjectRepository(RecordEntity)
-    private recordsRepository: Repository<RecordEntity>,
-  ) {}
+  constructor(@InjectRepository(RecordEntity) private repo: Repository<RecordEntity>) {}
 
-  async create(createRecordDto: CreateRecordDto): Promise<RecordEntity> {
-    const record = this.recordsRepository.create(createRecordDto);
-    return await this.recordsRepository.save(record);
+  async create(dto: CreateRecordDto) {
+    const rec = this.repo.create(dto);
+    return this.repo.save(rec);
   }
 
-  async findAll(searchDto: SearchRecordsDto): Promise<RecordEntity[]> {
+  async findAll(params: SearchRecordsDto) {
     const where: any = {};
-
-    if (searchDto.q) {
-      // Simple search across title fields
-      return await this.recordsRepository
-        .createQueryBuilder('record')
-        .where('record.title_ht ILIKE :q', { q: `%${searchDto.q}%` })
-        .orWhere('record.title_fr ILIKE :q', { q: `%${searchDto.q}%` })
-        .orWhere('record.abstract_en ILIKE :q', { q: `%${searchDto.q}%` })
-        .getMany();
+    if (params.creole_class) where.creole_class = params.creole_class;
+    if (params.access_tier) where.access_tier = params.access_tier;
+    if (params.q) {
+      return this.repo.find({
+        where: [
+          { title_ht: ILike(`%${params.q}%`) },
+          { title_fr: ILike(`%${params.q}%`) },
+          { abstract_en: ILike(`%${params.q}%`) },
+        ],
+        order: { createdAt: 'DESC' },
+        take: 50
+      });
     }
-
-    if (searchDto.access_tier) {
-      where.access_tier = searchDto.access_tier;
-    }
-
-    if (searchDto.community) {
-      where.community = searchDto.community;
-    }
-
-    if (searchDto.creole_class) {
-      where.creole_class = searchDto.creole_class;
-    }
-
-    return await this.recordsRepository.find({ where });
+    return this.repo.find({ where, order: { createdAt: 'DESC' }, take: 50 });
   }
 
-  async findOne(id: string): Promise<RecordEntity> {
-    const record = await this.recordsRepository.findOne({ where: { id } });
-    if (!record) {
-      throw new NotFoundException(`Record with ID ${id} not found`);
-    }
-    return record;
-  }
-
-  async update(id: string, updateRecordDto: Partial<CreateRecordDto>): Promise<RecordEntity> {
-    const record = await this.findOne(id);
-    Object.assign(record, updateRecordDto);
-    return await this.recordsRepository.save(record);
-  }
-
-  async remove(id: string): Promise<void> {
-    const record = await this.findOne(id);
-    await this.recordsRepository.remove(record);
+  findOne(id: string) {
+    return this.repo.findOne({ where: { id } });
   }
 }
