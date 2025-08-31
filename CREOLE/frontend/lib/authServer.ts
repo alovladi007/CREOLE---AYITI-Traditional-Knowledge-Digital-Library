@@ -1,55 +1,22 @@
-import { cookies } from 'next/headers';
-import { parseJwt } from './oidc';
+import { cookies } from 'next/headers'
 
-export interface Session {
-  authenticated: boolean;
-  roles: string[];
-  username?: string;
-  token?: string;
+export async function getSessionServer() {
+  const raw = cookies().get('creole_session')?.value
+  if (!raw) return { authenticated:false, roles:[], token:null }
+  const sess = JSON.parse(raw)
+  const now = Math.floor(Date.now()/1000)
+  const parts = (sess.access_token||'').split('.')
+  let claims:any = {}
+  if (parts.length===3){
+    try { claims = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8')) } catch {}
+  }
+  const roles = claims?.realm_access?.roles || []
+  return { authenticated:true, roles, token: sess.access_token }
 }
 
-export async function getSessionServer(): Promise<Session> {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get('creole_session');
-  
-  if (!sessionCookie) {
-    return { authenticated: false, roles: [] };
-  }
-
-  try {
-    const session = JSON.parse(sessionCookie.value);
-    
-    // Check if token is expired
-    if (session.expires_at && new Date(session.expires_at) < new Date()) {
-      return { authenticated: false, roles: [] };
-    }
-
-    // Parse roles from access token
-    const tokenData = parseJwt(session.access_token);
-    const roles = tokenData?.realm_access?.roles || [];
-    
-    return {
-      authenticated: true,
-      roles,
-      username: tokenData?.preferred_username || tokenData?.email,
-      token: session.access_token,
-    };
-  } catch {
-    return { authenticated: false, roles: [] };
-  }
-}
-
-export async function serverFetch(url: string, init?: RequestInit): Promise<Response> {
-  const session = await getSessionServer();
-  
-  const headers = new Headers(init?.headers);
-  
-  if (session.token) {
-    headers.set('Authorization', `Bearer ${session.token}`);
-  }
-  
-  return fetch(url, {
-    ...init,
-    headers,
-  });
+export async function serverFetch(input: string, init: any = {}){
+  const sess = await getSessionServer()
+  const headers = new Headers(init.headers || {})
+  if (sess.token) headers.set('Authorization', `Bearer ${sess.token}`)
+  return fetch(input, { ...init, headers })
 }

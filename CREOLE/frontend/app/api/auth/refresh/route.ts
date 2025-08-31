@@ -1,65 +1,33 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { cookies } from 'next/headers'
 
 export async function POST() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get('creole_session');
-  
-  if (!sessionCookie) {
-    return NextResponse.json({ error: 'No session' }, { status: 401 });
-  }
+  const kc = process.env.KEYCLOAK_URL || 'http://localhost:8080'
+  const realm = process.env.KEYCLOAK_REALM || 'creole'
+  const clientId = process.env.KEYCLOAK_FRONTEND_CLIENT_ID || 'creole-frontend'
 
-  try {
-    const session = JSON.parse(sessionCookie.value);
-    
-    if (!session.refresh_token) {
-      return NextResponse.json({ error: 'No refresh token' }, { status: 401 });
-    }
+  const raw = cookies().get('creole_session')?.value
+  if (!raw) return new Response('no session', { status: 401 })
+  const sess = JSON.parse(raw)
 
-    const keycloakUrl = process.env.KEYCLOAK_URL || 'http://localhost:8080';
-    const realm = process.env.KEYCLOAK_REALM || 'creole';
-    const clientId = process.env.KEYCLOAK_FRONTEND_CLIENT_ID || 'creole-frontend';
+  const tokenUrl = `${kc}/realms/${realm}/protocol/openid-connect/token`
+  const form = new URLSearchParams()
+  form.set('grant_type','refresh_token')
+  form.set('refresh_token', sess.refresh_token)
+  form.set('client_id', clientId)
 
-    const tokenUrl = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/token`;
-    
-    const tokenResponse = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        client_id: clientId,
-        refresh_token: session.refresh_token,
-      }),
-    });
+  const res = await fetch(tokenUrl, { method: 'POST', headers: { 'Content-Type':'application/x-www-form-urlencoded' }, body: form })
+  if (!res.ok) return new Response('refresh failed', { status: 401 })
+  const tokens = await res.json() as any
 
-    if (!tokenResponse.ok) {
-      throw new Error('Token refresh failed');
-    }
+  const now = Math.floor(Date.now()/1000)
+  const expiresAt = now + (tokens.expires_in || 300)
 
-    const tokens = await tokenResponse.json();
-    
-    const newSession = {
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      id_token: tokens.id_token,
-      expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString(),
-    };
+  cookies().set('creole_session', JSON.stringify({
+    access_token: tokens.access_token,
+    refresh_token: tokens.refresh_token || sess.refresh_token,
+    id_token: tokens.id_token || sess.id_token,
+    expires_at: expiresAt
+  }), { httpOnly: true, path: '/' })
 
-    const response = NextResponse.json({ success: true });
-    
-    // Update session cookie
-    response.cookies.set('creole_session', JSON.stringify(newSession), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: tokens.expires_in,
-    });
-
-    return response;
-  } catch (error) {
-    console.error('Token refresh error:', error);
-    return NextResponse.json({ error: 'Refresh failed' }, { status: 401 });
-  }
+  return new Response('ok')
 }
