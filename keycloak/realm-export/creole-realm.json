@@ -20,35 +20,54 @@
     },
     {
       "clientId": "creole-backend",
-      "secret": "backend-secret-please-change",
-      "serviceAccountsEnabled": true,
-      "bearerOnly": false,
       "publicClient": false,
       "directAccessGrantsEnabled": true,
+      "secret": "backend-secret-key-change-in-production",
       "redirectUris": ["http://localhost:4000/*"],
-      "webOrigins": ["*"]
+      "webOrigins": ["http://localhost:4000"]
     }
   ],
   "users": [
     {
       "username": "admin@creole",
+      "email": "admin@creole.ht",
       "enabled": true,
-      "email": "admin@example.com",
-      "credentials": [{"type": "password", "value": "adminpass"}],
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
       "realmRoles": ["admin"]
     },
     {
       "username": "examiner@creole",
+      "email": "examiner@creole.ht",
       "enabled": true,
-      "email": "examiner@example.com",
-      "credentials": [{"type": "password", "value": "examinerpass"}],
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "examiner123",
+          "temporary": false
+        }
+      ],
       "realmRoles": ["examiner"]
     },
     {
       "username": "user@creole",
+      "email": "user@creole.ht",
       "enabled": true,
-      "email": "user@example.com",
-      "credentials": [{"type": "password", "value": "userpass"}],
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user123",
+          "temporary": false
+        }
+      ],
       "realmRoles": ["community_user"]
     }
   ]
