@@ -1,20 +1,15 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RecordEntity } from '../records/entities/record.entity';
+import { NotifyService } from '../notify/notify.service';
+import { AuditModule } from '../audit/audit.module';
 import { AccessRequestEntity } from './access-request.entity';
 import { AccessService } from './access.service';
 import { AccessController } from './access.controller';
-import { RecordsModule } from '../records/records.module';
-import { AuditModule } from '../audit/audit.module';
-import { NotifyService } from '../notify/notify.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AccessRequestEntity]),
-    forwardRef(() => RecordsModule),
-    AuditModule,
-  ],
+  imports: [TypeOrmModule.forFeature([AccessRequestEntity, RecordEntity]), AuditModule],
   providers: [AccessService, NotifyService],
   controllers: [AccessController],
-  exports: [AccessService],
 })
 export class AccessModule {}

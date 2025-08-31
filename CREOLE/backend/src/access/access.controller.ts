@@ -1,129 +1,72 @@
-import { Controller, Get, Post, Patch, Body, Param, Request, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RecordEntity } from '../records/entities/record.entity';
+import { NotifyService } from '../notify/notify.service';
+import { AuditService } from '../audit/audit.service';
 import { Roles } from 'nest-keycloak-connect';
 import { AccessService } from './access.service';
-import { AuditService } from '../audit/audit.service';
-import { NotifyService } from '../notify/notify.service';
+import { CreateAccessRequestDto } from './dto';
 
-@Controller('access-requests')
+@Controller('v1/access-requests')
 export class AccessController {
   constructor(
-    private readonly accessService: AccessService,
-    private readonly auditService: AuditService,
-    private readonly notifyService: NotifyService,
+    private readonly service: AccessService,
+    @InjectRepository(RecordEntity) private recRepo: Repository<RecordEntity>,
+    private readonly notify: NotifyService,
+    private readonly audit: AuditService,
   ) {}
 
   @Post()
-  @Roles({ roles: ['community_user', 'examiner', 'admin'] })
-  async create(@Body() body: any, @Request() req) {
-    if (!body.recordId) {
-      throw new BadRequestException('recordId is required');
-    }
-
-    const request = await this.accessService.createRequest({
-      recordId: body.recordId,
-      requester: req.user?.preferred_username || req.user?.email || 'unknown',
-      purpose: body.purpose || 'Research purposes',
-      requested_fields: body.requested_fields,
+  async create(@Body() dto: CreateAccessRequestDto, @Req() req: any) {
+    const requester = req?.user?.preferred_username || req?.user?.email || 'unknown';
+    if (!dto.recordId) throw new BadRequestException('recordId is required');
+    const rec = await this.recRepo.findOne({ where: { id: dto.recordId } });
+    if (!rec) throw new BadRequestException('record not found');
+    if (rec.access_tier === 'public') throw new BadRequestException('Access request only for restricted/secret records');
+    
+    const created = await this.service.create({ 
+      requester, 
+      purpose: dto.purpose, 
+      requested_fields: dto.requested_fields || null, 
+      recordId: dto.recordId 
     });
-
-    // Send notifications
-    await this.notifyService.sendWebhook('access_request.created', {
-      requestId: request.id,
-      recordId: request.recordId,
-      requester: request.requester,
-    });
-
-    await this.notifyService.sendEmail(
-      process.env.ADMIN_EMAIL || 'admin@example.com',
-      'New Access Request',
-      `A new access request has been submitted by ${request.requester} for record ${request.recordId}.`,
-    );
-
-    // Audit log
-    await this.auditService.append(
-      request.requester,
-      'access_request.create',
-      { requestId: request.id, recordId: request.recordId }
-    );
-
-    return request;
+    
+    await this.notify.webhook({ type: 'access_request.created', id: created.id, recordId: dto.recordId, requester });
+    const admin = process.env.ADMIN_EMAIL || 'admin@example.com';
+    await this.notify.sendEmail(admin, 'CREOLE access request', `Request ${created.id} for record ${dto.recordId} by ${requester}`);
+    await this.audit.append(requester, 'access_request.created', { id: created.id, recordId: dto.recordId });
+    
+    return created;
   }
 
   @Get('inbox')
   @Roles({ roles: ['admin'] })
-  async getInbox() {
-    return await this.accessService.findPending();
+  inbox() {
+    return this.service.listInbox();
   }
 
   @Patch(':id/approve')
   @Roles({ roles: ['admin'] })
-  async approve(
-    @Param('id') id: string,
-    @Body() body: any,
-    @Request() req,
-  ) {
-    const request = await this.accessService.updateStatus(
-      id,
-      'approved',
-      req.user?.preferred_username || 'admin',
-      body.note,
-    );
-
-    // Notifications
-    await this.notifyService.sendWebhook('access_request.approved', {
-      requestId: request.id,
-      decidedBy: request.decided_by,
-    });
-
-    await this.notifyService.sendEmail(
-      request.requester,
-      'Access Request Approved',
-      `Your access request for record ${request.recordId} has been approved.`,
-    );
-
-    // Audit
-    await this.auditService.append(
-      request.decided_by,
-      'access_request.approve',
-      { requestId: request.id }
-    );
-
-    return request;
+  async approve(@Param('id') id: string, @Req() req: any, @Body('note') note?: string) {
+    const decidedBy = req?.user?.preferred_username || 'admin';
+    const res = await this.service.decide(id, 'approved', decidedBy, note);
+    await this.notify.webhook({ type: 'access_request.approved', id });
+    await this.audit.append(decidedBy, 'access_request.approved', { id });
+    const admin = process.env.ADMIN_EMAIL || 'admin@example.com';
+    await this.notify.sendEmail(admin, 'CREOLE access APPROVED', `Request ${id} approved by ${decidedBy}`);
+    return res;
   }
 
   @Patch(':id/deny')
   @Roles({ roles: ['admin'] })
-  async deny(
-    @Param('id') id: string,
-    @Body() body: any,
-    @Request() req,
-  ) {
-    const request = await this.accessService.updateStatus(
-      id,
-      'denied',
-      req.user?.preferred_username || 'admin',
-      body.note,
-    );
-
-    // Notifications
-    await this.notifyService.sendWebhook('access_request.denied', {
-      requestId: request.id,
-      decidedBy: request.decided_by,
-    });
-
-    await this.notifyService.sendEmail(
-      request.requester,
-      'Access Request Denied',
-      `Your access request for record ${request.recordId} has been denied. Reason: ${body.note || 'No reason provided'}`,
-    );
-
-    // Audit
-    await this.auditService.append(
-      request.decided_by,
-      'access_request.deny',
-      { requestId: request.id, reason: body.note }
-    );
-
-    return request;
+  async deny(@Param('id') id: string, @Req() req: any, @Body('note') note?: string) {
+    const decidedBy = req?.user?.preferred_username || 'admin';
+    const res = await this.service.decide(id, 'denied', decidedBy, note);
+    await this.notify.webhook({ type: 'access_request.denied', id });
+    await this.audit.append(decidedBy, 'access_request.denied', { id });
+    const admin = process.env.ADMIN_EMAIL || 'admin@example.com';
+    await this.notify.sendEmail(admin, 'CREOLE access DENIED', `Request ${id} denied by ${decidedBy}`);
+    return res;
   }
 }

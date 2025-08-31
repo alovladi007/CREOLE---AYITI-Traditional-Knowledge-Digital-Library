@@ -1,35 +1,33 @@
-import { Entity, Column } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../common/base.entity';
-
-export type RequestStatus = 'pending' | 'approved' | 'denied';
+import { RecordEntity } from '../records/entities/record.entity';
 
 @Entity('access_requests')
 export class AccessRequestEntity extends BaseEntity {
-  @Column()
+  @ManyToOne(() => RecordEntity, { onDelete: 'CASCADE', nullable: true })
+  record: RecordEntity | null;
+
+  @Column({ nullable: true })
   recordId: string;
 
   @Column()
-  requester: string;
+  requester: string; // Keycloak user or email
 
   @Column({ type: 'text' })
   purpose: string;
 
-  @Column('simple-array', { nullable: true })
-  requested_fields?: string[];
+  @Column({ type: 'jsonb', nullable: true })
+  requested_fields: any;
 
-  @Column({
-    type: 'enum',
-    enum: ['pending', 'approved', 'denied'],
-    default: 'pending',
-  })
-  status: RequestStatus;
+  @Column({ default: 'pending' })
+  status: 'pending' | 'approved' | 'denied';
 
   @Column({ type: 'text', nullable: true })
-  decision_note?: string;
+  decision_note: string | null;
 
   @Column({ nullable: true })
-  decided_by?: string;
+  decided_by: string | null;
 
-  @Column({ type: 'timestamp', nullable: true })
-  decided_at?: Date;
+  @Column({ type: 'timestamptz', nullable: true })
+  decided_at: Date | null;
 }

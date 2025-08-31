@@ -1,6 +1,5 @@
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-python-multipart==0.0.6
-Pillow==10.1.0
-numpy==1.26.2
+fastapi==0.111.0
+uvicorn==0.29.0
+pydantic==2.7.1
+Pillow==10.3.0
+python-multipart==0.0.9

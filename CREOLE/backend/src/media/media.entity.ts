@@ -1,35 +1,33 @@
-import { Entity, Column } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../common/base.entity';
-
-export type RedactionStatus = 'pending' | 'redacted' | 'none';
+import { RecordEntity } from '../records/entities/record.entity';
 
 @Entity('media')
 export class MediaEntity extends BaseEntity {
+  @ManyToOne(() => RecordEntity, { onDelete: 'SET NULL', nullable: true })
+  record: RecordEntity | null;
+
   @Column({ nullable: true })
-  recordId?: string;
+  recordId: string;
 
-  @Column({ unique: true })
-  key: string;
+  @Column() 
+  key: string; // object key in MinIO
 
-  @Column()
+  @Column() 
   filename: string;
 
-  @Column()
+  @Column() 
   mimetype: string;
 
-  @Column()
+  @Column('bigint') 
   size: number;
 
-  @Column()
+  @Column() 
   sha256: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['pending', 'redacted', 'none'],
-    default: 'none',
-  })
-  redaction_status: RedactionStatus;
+  @Column({ default: 'pending' }) 
+  redaction_status: 'pending'|'redacted'|'none';
 
-  @Column('jsonb', { nullable: true })
-  redaction_meta?: Record<string, any>;
+  @Column({ type: 'jsonb', nullable: true }) 
+  redaction_meta: any;
 }
