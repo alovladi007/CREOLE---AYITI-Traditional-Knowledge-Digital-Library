@@ -42,5 +42,5 @@ export async function GET(req: Request) {
   cookies().delete('oidc_state'); 
   cookies().delete('oidc_verifier')
 
-  return Response.redirect('/', 302)
+  return Response.redirect('http://localhost:3000/', 302)
 }
