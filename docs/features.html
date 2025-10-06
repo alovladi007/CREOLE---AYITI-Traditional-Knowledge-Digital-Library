@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features — CREOLE TKDL</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🌺 CREOLE</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" style="padding: 60px 20px;">
+        <div class="hero-content">
+            <h1>Comprehensive Features</h1>
+            <p>Explore the 10 major enhancement categories in Version 2.0</p>
+        </div>
+    </section>
+
+    <!-- Search & Discovery -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🔍 Advanced Search & Discovery</h2>
+            <p>Powerful search capabilities with PostgreSQL full-text search and faceted filtering.</p>
+
+            <h3>Features</h3>
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Full-Text Search</h3>
+                    <p>PostgreSQL tsvector/tsquery for lightning-fast searches across all traditional knowledge records.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Relevance Ranking</h3>
+                    <p>Intelligent ranking algorithm that prioritizes the most relevant results based on your query.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Faceted Filtering</h3>
+                    <p>Filter by categories, tags, dates, communities, and more with dynamic aggregations.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Multi-Language</h3>
+                    <p>Search in Haitian Creole, French, or English with seamless language detection.</p>
+                </div>
+            </div>
+
+            <h3>Technical Implementation</h3>
+            <div class="code-block">
+// Example: Advanced Search Query
+const results = await recordsService.findAll({
+  q: 'medsin tradisyonèl',        // Query in Haitian Creole
+  categories: ['health', 'plants'], // Faceted filters
+  dateFrom: '2020-01-01',          // Date range
+  sortBy: 'relevance',             // Sort by relevance
+  page: 1,
+  limit: 20
+});
+
+// Returns: Paginated results with facets and aggregations
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Management -->
+    <section class="content-section">
+        <div class="container">
+            <h2>📊 Enhanced Data Management</h2>
+            <p>Complete version control, bulk operations, and record relationships.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Version Control</h3>
+                    <ul>
+                        <li>Complete revision history</li>
+                        <li>Diff calculation between versions</li>
+                        <li>Revert to previous versions</li>
+                        <li>Change tracking and audit logs</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Bulk Import/Export</h3>
+                    <ul>
+                        <li>CSV import with validation</li>
+                        <li>JSON export for backups</li>
+                        <li>BibTeX export for citations</li>
+                        <li>Excel export for analysis</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Record Relationships</h3>
+                    <ul>
+                        <li>Cross-reference related records</li>
+                        <li>Typed relationships (derived_from, relates_to)</li>
+                        <li>Similarity detection algorithm</li>
+                        <li>Network visualization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Engagement -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🤝 Community Engagement</h2>
+            <p>Foster collaboration with profiles, comments, and community voting.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>User Profiles</h3>
+                    <ul>
+                        <li>Extended profile with bio and expertise</li>
+                        <li>Reputation system based on contributions</li>
+                        <li>Contribution tracking dashboard</li>
+                        <li>Achievement badges</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Threaded Comments</h3>
+                    <ul>
+                        <li>Nested comment threads</li>
+                        <li>Moderation workflow (pending, approved, rejected)</li>
+                        <li>Report inappropriate content</li>
+                        <li>Email notifications</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Community Voting</h3>
+                    <ul>
+                        <li>Verify: Confirm authenticity</li>
+                        <li>Accurate: Rate accuracy</li>
+                        <li>Helpful: Mark helpful records</li>
+                        <li>Flag: Report issues</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics & Reporting -->
+    <section class="content-section">
+        <div class="container">
+            <h2>📈 Analytics & Reporting</h2>
+            <p>Comprehensive analytics with interactive dashboards and event tracking.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Event Tracking</h3>
+                    <ul>
+                        <li>Record views and downloads</li>
+                        <li>Search query analytics</li>
+                        <li>User engagement metrics</li>
+                        <li>API usage statistics</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Interactive Dashboards</h3>
+                    <ul>
+                        <li>Chart.js visualizations</li>
+                        <li>Pie charts for categories</li>
+                        <li>Line charts for trends</li>
+                        <li>Bar charts for comparisons</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Reporting</h3>
+                    <ul>
+                        <li>Record-level analytics</li>
+                        <li>User-level analytics</li>
+                        <li>Export to CSV/PDF</li>
+                        <li>Scheduled reports</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Enhancements -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🚀 API Enhancements</h2>
+            <p>Complete GraphQL API with Swagger documentation and rate limiting.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>GraphQL API</h3>
+                    <ul>
+                        <li>Complete schema with queries/mutations</li>
+                        <li>Nested relationships</li>
+                        <li>Field-level authorization</li>
+                        <li>GraphQL Playground</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Swagger/OpenAPI</h3>
+                    <ul>
+                        <li>Interactive API documentation</li>
+                        <li>Try-it-out functionality</li>
+                        <li>OAuth2 and JWT authentication</li>
+                        <li>Available at /api/docs</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Rate Limiting</h3>
+                    <ul>
+                        <li>Short: 10 requests/minute</li>
+                        <li>Medium: 100 requests/hour</li>
+                        <li>Long: 1000 requests/day</li>
+                        <li>Custom limits per endpoint</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security & Compliance -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🔒 Security & Compliance</h2>
+            <p>Enterprise-grade security with 2FA, GDPR compliance, and audit logging.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Two-Factor Authentication</h3>
+                    <ul>
+                        <li>TOTP-based (Google Authenticator)</li>
+                        <li>QR code generation</li>
+                        <li>Backup codes</li>
+                        <li>Trusted devices</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>GDPR Compliance</h3>
+                    <ul>
+                        <li>Data export (JSON format)</li>
+                        <li>Account deletion/anonymization</li>
+                        <li>Data portability</li>
+                        <li>Consent management</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Advanced Security</h3>
+                    <ul>
+                        <li>IP whitelisting for sensitive endpoints</li>
+                        <li>Enhanced audit logging</li>
+                        <li>Session management</li>
+                        <li>CSRF protection</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UX/UI Improvements -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🎨 UX/UI Improvements</h2>
+            <p>Modern interface with internationalization, dark mode, and accessibility.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Internationalization</h3>
+                    <ul>
+                        <li>Haitian Creole (primary)</li>
+                        <li>French translation</li>
+                        <li>English translation</li>
+                        <li>Dynamic language switching</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Dark Mode</h3>
+                    <ul>
+                        <li>System preference detection</li>
+                        <li>Manual toggle</li>
+                        <li>Persistent settings</li>
+                        <li>Smooth transitions</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Accessibility</h3>
+                    <ul>
+                        <li>WCAG 2.1 AA ready</li>
+                        <li>Screen reader support</li>
+                        <li>Keyboard navigation</li>
+                        <li>High contrast mode</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Capabilities -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🎬 Content Capabilities</h2>
+            <p>Rich media support with transcription, OCR, maps, and timelines.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Rich Text Editor</h3>
+                    <ul>
+                        <li>Quill.js WYSIWYG editor</li>
+                        <li>Formatting tools</li>
+                        <li>Image embedding</li>
+                        <li>Code syntax highlighting</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Enhanced Media</h3>
+                    <ul>
+                        <li>Video/audio transcription</li>
+                        <li>OCR for PDF documents</li>
+                        <li>EXIF data extraction</li>
+                        <li>Thumbnail generation</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Interactive Maps</h3>
+                    <ul>
+                        <li>Leaflet integration</li>
+                        <li>GeoJSON support</li>
+                        <li>Marker clustering</li>
+                        <li>Custom map styles</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Timeline Visualization</h3>
+                    <ul>
+                        <li>Historical event tracking</li>
+                        <li>Flexible date formats</li>
+                        <li>Interactive timeline UI</li>
+                        <li>Period representations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collaboration Features -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🤝 Collaboration Features</h2>
+            <p>Multi-user editing, review workflow, and citation generation.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Review Workflow</h3>
+                    <ul>
+                        <li>Review assignments</li>
+                        <li>Approval/rejection workflow</li>
+                        <li>Review checklists</li>
+                        <li>Quality scoring</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Multi-User Editing</h3>
+                    <ul>
+                        <li>Real-time session tracking</li>
+                        <li>Record locking</li>
+                        <li>Conflict resolution</li>
+                        <li>Activity notifications</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Citation Generation</h3>
+                    <ul>
+                        <li>APA format</li>
+                        <li>MLA format</li>
+                        <li>Chicago format</li>
+                        <li>Harvard & BibTeX</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance & Scalability -->
+    <section class="content-section">
+        <div class="container">
+            <h2>⚡ Performance & Scalability</h2>
+            <p>Redis caching, background job processing, and optimized database queries.</p>
+
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Redis Caching</h3>
+                    <ul>
+                        <li>Frequent query caching</li>
+                        <li>TTL strategies (5m, 1h, 1d)</li>
+                        <li>Cache invalidation</li>
+                        <li>Significant speed improvements</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Background Jobs</h3>
+                    <ul>
+                        <li>Bull queue processing</li>
+                        <li>Bulk operations</li>
+                        <li>Media processing</li>
+                        <li>Report generation</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h3>Database Optimization</h3>
+                    <ul>
+                        <li>Strategic indexing</li>
+                        <li>Query optimization</li>
+                        <li>Connection pooling</li>
+                        <li>Read replicas ready</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="features" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title" style="color: white;">Ready to Explore?</h2>
+            <p style="font-size: 1.2em; margin-bottom: 30px;">Start using the CREOLE Traditional Knowledge Digital Library today.</p>
+            <div class="cta-buttons">
+                <a href="http://localhost:3000" class="btn btn-primary">Launch Platform</a>
+                <a href="documentation.html" class="btn btn-secondary">Read Documentation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3 style="margin-bottom: 20px;">🌺 Built with ❤️ for Haitian Cultural Preservation</h3>
+            <p>
+                <a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library">GitHub</a> •
+                <a href="http://localhost:4000/api/docs">API Docs</a> •
+                <a href="documentation.html">Documentation</a>
+            </p>
+            <p style="margin-top: 20px; opacity: 0.7;">MIT License © 2024 CREOLE TKDL</p>
+        </div>
+    </footer>
+</body>
+</html>

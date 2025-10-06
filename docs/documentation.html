@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation — CREOLE TKDL</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🌺 CREOLE</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" style="padding: 60px 20px;">
+        <div class="hero-content">
+            <h1>📚 Documentation</h1>
+            <p>Complete guides for installation, configuration, and usage</p>
+        </div>
+    </section>
+
+    <!-- Getting Started -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🚀 Getting Started</h2>
+
+            <h3>Prerequisites</h3>
+            <ul style="margin-left: 20px; margin-bottom: 30px;">
+                <li>Docker & Docker Compose</li>
+                <li>Git</li>
+                <li>Node.js 18+ (for local development)</li>
+                <li>PostgreSQL 15+ (optional, Docker includes it)</li>
+            </ul>
+
+            <h3>Quick Installation</h3>
+            <div class="code-block">
+# 1. Clone the repository
+git clone https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library.git
+cd CREOLE---AYITI-Traditional-Knowledge-Digital-Library
+
+# 2. Copy environment variables
+cp .env.example .env
+
+# 3. Start all services with Docker Compose
+docker compose up --build
+
+# 4. Wait for all services to be healthy (2-3 minutes)
+
+# 5. Seed initial data
+docker compose exec backend npm run seed
+            </div>
+
+            <h3>Access the Platform</h3>
+            <ul style="margin-left: 20px; margin-bottom: 30px;">
+                <li><strong>Frontend:</strong> <a href="http://localhost:3000">http://localhost:3000</a></li>
+                <li><strong>Backend API:</strong> <a href="http://localhost:4000">http://localhost:4000</a></li>
+                <li><strong>Swagger Docs:</strong> <a href="http://localhost:4000/api/docs">http://localhost:4000/api/docs</a></li>
+                <li><strong>Keycloak:</strong> <a href="http://localhost:8080">http://localhost:8080</a></li>
+                <li><strong>MinIO Console:</strong> <a href="http://localhost:9001">http://localhost:9001</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Configuration -->
+    <section class="content-section">
+        <div class="container">
+            <h2>⚙️ Configuration</h2>
+
+            <h3>Environment Variables</h3>
+            <p>Edit the <code>.env</code> file to configure your installation:</p>
+            <div class="code-block">
+# Database Configuration
+DB_HOST=postgres
+DB_PORT=5432
+DB_USERNAME=creole
+DB_PASSWORD=your_secure_password
+DB_DATABASE=creole_db
+
+# Authentication (Keycloak)
+KEYCLOAK_URL=http://localhost:8080
+KEYCLOAK_REALM=creole
+KEYCLOAK_CLIENT_ID=creole-backend
+KEYCLOAK_CLIENT_SECRET=your_client_secret
+
+# Redis Cache
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+# MinIO Storage
+MINIO_ENDPOINT=minio
+MINIO_PORT=9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=creole-files
+
+# Frontend
+NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8080
+            </div>
+
+            <h3>Custom Configuration</h3>
+            <p>For production deployments:</p>
+            <ul style="margin-left: 20px;">
+                <li>Change all default passwords</li>
+                <li>Configure HTTPS/SSL certificates</li>
+                <li>Set up proper domain names</li>
+                <li>Enable firewall rules</li>
+                <li>Configure backup strategies</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- User Guides -->
+    <section class="content-section">
+        <div class="container">
+            <h2>👥 User Guides</h2>
+
+            <h3>Demo Users</h3>
+            <p>After seeding, these users are available for testing:</p>
+
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <thead style="background: #667eea; color: white;">
+                    <tr>
+                        <th style="padding: 15px; text-align: left;">Role</th>
+                        <th style="padding: 15px; text-align: left;">Username</th>
+                        <th style="padding: 15px; text-align: left;">Password</th>
+                        <th style="padding: 15px; text-align: left;">Capabilities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: white;">
+                        <td style="padding: 15px; border: 1px solid #ddd;">Admin</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">admin</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">admin123</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Full system access</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd;">Editor</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">editor</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">editor123</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Create and edit records</td>
+                    </tr>
+                    <tr style="background: white;">
+                        <td style="padding: 15px; border: 1px solid #ddd;">Viewer</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">viewer</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">viewer123</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Read-only access</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd;">Researcher</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">researcher</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">researcher123</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Advanced search & export</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Common Tasks</h3>
+            <div class="features-grid" style="margin-top: 30px;">
+                <div class="feature-card">
+                    <h3>Adding a Record</h3>
+                    <ol style="list-style-position: inside;">
+                        <li>Log in as editor or admin</li>
+                        <li>Click "New Record"</li>
+                        <li>Fill in required fields (title, description)</li>
+                        <li>Add optional metadata (tags, category)</li>
+                        <li>Upload media files if needed</li>
+                        <li>Submit for review or publish</li>
+                    </ol>
+                </div>
+                <div class="feature-card">
+                    <h3>Searching Records</h3>
+                    <ol style="list-style-position: inside;">
+                        <li>Use the search bar on homepage</li>
+                        <li>Enter keywords in any language</li>
+                        <li>Apply filters (category, date, etc.)</li>
+                        <li>Sort by relevance or date</li>
+                        <li>View results with highlights</li>
+                        <li>Export results if needed</li>
+                    </ol>
+                </div>
+                <div class="feature-card">
+                    <h3>Enabling 2FA</h3>
+                    <ol style="list-style-position: inside;">
+                        <li>Go to Account Settings</li>
+                        <li>Click "Enable 2FA"</li>
+                        <li>Scan QR code with authenticator app</li>
+                        <li>Enter verification code</li>
+                        <li>Save backup codes securely</li>
+                        <li>2FA is now active</li>
+                    </ol>
+                </div>
+                <div class="feature-card">
+                    <h3>Exporting Data</h3>
+                    <ol style="list-style-position: inside;">
+                        <li>Navigate to Data Management</li>
+                        <li>Select export format (CSV/JSON)</li>
+                        <li>Choose filters if needed</li>
+                        <li>Click "Export"</li>
+                        <li>Wait for processing</li>
+                        <li>Download generated file</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Documentation -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🔌 API Documentation</h2>
+
+            <h3>REST API</h3>
+            <p>Interactive API documentation is available at: <a href="http://localhost:4000/api/docs">http://localhost:4000/api/docs</a></p>
+
+            <h3>Example REST Endpoints</h3>
+            <div class="code-block">
+# Get all records (paginated)
+GET /api/records?page=1&limit=20
+
+# Search records
+GET /api/records?q=medsin&category=health
+
+# Get single record
+GET /api/records/:id
+
+# Create record (requires authentication)
+POST /api/records
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "title_ht": "Medsin fèy",
+  "description_ht": "Remèd tradisyonèl ak fèy...",
+  "category": "health"
+}
+
+# Update record
+PATCH /api/records/:id
+
+# Delete record
+DELETE /api/records/:id
+            </div>
+
+            <h3>GraphQL API</h3>
+            <p>GraphQL endpoint: <code>http://localhost:4000/graphql</code></p>
+            <div class="code-block">
+# Example Query
+query GetRecords {
+  records(page: 1, limit: 10) {
+    items {
+      id
+      title_ht
+      description_ht
+      category
+      tags
+      createdAt
+      author {
+        id
+        username
+      }
+      comments {
+        id
+        content
+        user {
+          username
+        }
+      }
+    }
+    total
+    page
+    pages
+  }
+}
+
+# Example Mutation
+mutation CreateRecord($input: CreateRecordInput!) {
+  createRecord(input: $input) {
+    id
+    title_ht
+    status
+  }
+}
+            </div>
+
+            <h3>Authentication</h3>
+            <p>The API uses OAuth2/OIDC via Keycloak:</p>
+            <div class="code-block">
+# 1. Get access token
+POST http://localhost:8080/realms/creole/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=creole-backend
+&client_secret={your_secret}
+&username=admin
+&password=admin123
+
+# 2. Use token in requests
+GET http://localhost:4000/api/records
+Authorization: Bearer {access_token}
+            </div>
+        </div>
+    </section>
+
+    <!-- Development -->
+    <section class="content-section">
+        <div class="container">
+            <h2>💻 Development Guide</h2>
+
+            <h3>Local Development Setup</h3>
+            <div class="code-block">
+# 1. Install dependencies
+cd backend && npm install
+cd ../frontend && npm install
+
+# 2. Start backend (development mode)
+cd backend
+npm run start:dev
+
+# 3. Start frontend (development mode)
+cd frontend
+npm run dev
+
+# 4. Run tests
+npm run test
+
+# 5. Run linter
+npm run lint
+            </div>
+
+            <h3>Database Migrations</h3>
+            <div class="code-block">
+# Generate migration
+npm run migration:generate -- -n MigrationName
+
+# Run migrations
+npm run migration:run
+
+# Revert migration
+npm run migration:revert
+            </div>
+
+            <h3>Project Structure</h3>
+            <div class="code-block">
+CREOLE-TKDL/
+├── backend/               # NestJS backend
+│   ├── src/
+│   │   ├── records/      # Records module
+│   │   ├── users/        # Users module
+│   │   ├── analytics/    # Analytics module
+│   │   ├── security/     # Security features
+│   │   ├── workflow/     # Workflow module
+│   │   └── ...
+│   └── package.json
+├── frontend/             # Next.js frontend
+│   ├── app/             # App router
+│   ├── components/      # React components
+│   ├── public/          # Static files
+│   │   └── locales/    # Translations
+│   └── package.json
+├── docker-compose.yml   # Docker services
+└── .env                # Environment config
+            </div>
+        </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🔧 Troubleshooting</h2>
+
+            <h3>Common Issues</h3>
+
+            <div class="timeline-item">
+                <h4>Docker containers won't start</h4>
+                <p><strong>Solution:</strong></p>
+                <div class="code-block">
+# Check if ports are already in use
+docker ps -a
+
+# Stop all containers
+docker compose down
+
+# Remove volumes and rebuild
+docker compose down -v
+docker compose up --build
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <h4>Database connection errors</h4>
+                <p><strong>Solution:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Check if PostgreSQL container is running: <code>docker compose ps</code></li>
+                    <li>Verify database credentials in <code>.env</code></li>
+                    <li>Wait for database to be fully initialized (check logs)</li>
+                    <li>Try restarting backend: <code>docker compose restart backend</code></li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h4>Keycloak authentication fails</h4>
+                <p><strong>Solution:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>Ensure Keycloak is fully started (takes 1-2 minutes)</li>
+                    <li>Verify realm is imported: Check <code>http://localhost:8080</code></li>
+                    <li>Clear browser cookies and try again</li>
+                    <li>Check backend logs for detailed error messages</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h4>Search not working</h4>
+                <p><strong>Solution:</strong></p>
+                <div class="code-block">
+# Rebuild search indexes
+docker compose exec backend npm run reindex
+
+# Check if records exist
+docker compose exec backend npm run seed
+                </div>
+            </div>
+
+            <h3>Getting Help</h3>
+            <ul style="margin-left: 20px;">
+                <li>Check <a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library/issues">GitHub Issues</a></li>
+                <li>Review <a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library/blob/main/ENHANCEMENTS.md">ENHANCEMENTS.md</a></li>
+                <li>Examine Docker logs: <code>docker compose logs -f [service]</code></li>
+                <li>Join community discussions</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3 style="margin-bottom: 20px;">🌺 Built with ❤️ for Haitian Cultural Preservation</h3>
+            <p>
+                <a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library">GitHub</a> •
+                <a href="http://localhost:4000/api/docs">API Docs</a> •
+                <a href="documentation.html">Documentation</a>
+            </p>
+            <p style="margin-top: 20px; opacity: 0.7;">MIT License © 2024 CREOLE TKDL</p>
+        </div>
+    </footer>
+</body>
+</html>

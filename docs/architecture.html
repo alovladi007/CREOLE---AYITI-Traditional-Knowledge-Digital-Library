@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture — CREOLE TKDL</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .architecture-diagram {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .layer {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .layer h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .component {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            text-align: center;
+            border: 1px solid #e1e4e8;
+        }
+        .flow-diagram {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .flow-step {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .flow-arrow {
+            display: inline-block;
+            font-size: 2em;
+            color: #667eea;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🌺 CREOLE</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="documentation.html">Documentation</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" style="padding: 60px 20px;">
+        <div class="hero-content">
+            <h1>🏗️ System Architecture</h1>
+            <p>Comprehensive overview of the CREOLE platform architecture</p>
+        </div>
+    </section>
+
+    <!-- Overview -->
+    <section class="content-section">
+        <div class="container">
+            <h2>📐 Architecture Overview</h2>
+            <p>CREOLE TKDL is built on a modern microservices architecture with containerized deployment using Docker Compose.</p>
+
+            <div class="architecture-diagram">
+                <div class="layer" style="background: #fff5f5;">
+                    <h4>🎨 Presentation Layer</h4>
+                    <div class="component-grid">
+                        <div class="component">Next.js 14 (App Router)</div>
+                        <div class="component">React 18</div>
+                        <div class="component">TypeScript</div>
+                        <div class="component">Server-Side Rendering</div>
+                    </div>
+                </div>
+
+                <div class="layer" style="background: #fffbeb;">
+                    <h4>🔐 Authentication Layer</h4>
+                    <div class="component-grid">
+                        <div class="component">Keycloak</div>
+                        <div class="component">OAuth2/OIDC</div>
+                        <div class="component">2FA (TOTP)</div>
+                        <div class="component">Session Management</div>
+                    </div>
+                </div>
+
+                <div class="layer" style="background: #f0fdf4;">
+                    <h4>⚙️ Application Layer</h4>
+                    <div class="component-grid">
+                        <div class="component">NestJS</div>
+                        <div class="component">REST API</div>
+                        <div class="component">GraphQL</div>
+                        <div class="component">Business Logic</div>
+                    </div>
+                </div>
+
+                <div class="layer" style="background: #eff6ff;">
+                    <h4>💾 Data Layer</h4>
+                    <div class="component-grid">
+                        <div class="component">PostgreSQL 15</div>
+                        <div class="component">TypeORM</div>
+                        <div class="component">Full-Text Search</div>
+                        <div class="component">Redis Cache</div>
+                    </div>
+                </div>
+
+                <div class="layer" style="background: #faf5ff;">
+                    <h4>📦 Storage & Services</h4>
+                    <div class="component-grid">
+                        <div class="component">MinIO (S3-compatible)</div>
+                        <div class="component">NLP Service</div>
+                        <div class="component">Bull Queue</div>
+                        <div class="component">Redis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🛠️ Technology Stack</h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Frontend</h3>
+                    <ul>
+                        <li><strong>Framework:</strong> Next.js 14</li>
+                        <li><strong>UI Library:</strong> React 18</li>
+                        <li><strong>Language:</strong> TypeScript</li>
+                        <li><strong>Styling:</strong> Tailwind CSS</li>
+                        <li><strong>State:</strong> React Query</li>
+                        <li><strong>i18n:</strong> next-i18next</li>
+                        <li><strong>Theme:</strong> next-themes</li>
+                        <li><strong>Maps:</strong> Leaflet</li>
+                        <li><strong>Charts:</strong> Chart.js</li>
+                        <li><strong>Editor:</strong> Quill.js</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Backend</h3>
+                    <ul>
+                        <li><strong>Framework:</strong> NestJS</li>
+                        <li><strong>Language:</strong> TypeScript</li>
+                        <li><strong>ORM:</strong> TypeORM</li>
+                        <li><strong>API:</strong> REST + GraphQL</li>
+                        <li><strong>Validation:</strong> class-validator</li>
+                        <li><strong>Documentation:</strong> Swagger</li>
+                        <li><strong>Rate Limiting:</strong> ThrottlerModule</li>
+                        <li><strong>Jobs:</strong> Bull Queue</li>
+                        <li><strong>Cache:</strong> cache-manager</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Database</h3>
+                    <ul>
+                        <li><strong>RDBMS:</strong> PostgreSQL 15</li>
+                        <li><strong>Full-Text Search:</strong> tsvector/tsquery</li>
+                        <li><strong>JSONB:</strong> For flexible data</li>
+                        <li><strong>Indexes:</strong> B-tree, GIN, GiST</li>
+                        <li><strong>Migrations:</strong> TypeORM migrations</li>
+                        <li><strong>Pooling:</strong> Connection pool</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Authentication</h3>
+                    <ul>
+                        <li><strong>Provider:</strong> Keycloak</li>
+                        <li><strong>Protocol:</strong> OAuth2/OIDC</li>
+                        <li><strong>Flow:</strong> Authorization Code + PKCE</li>
+                        <li><strong>2FA:</strong> TOTP (RFC 6238)</li>
+                        <li><strong>Tokens:</strong> JWT</li>
+                        <li><strong>SSO:</strong> Supported</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Caching & Jobs</h3>
+                    <ul>
+                        <li><strong>Cache:</strong> Redis 7</li>
+                        <li><strong>Queue:</strong> Bull (Redis-based)</li>
+                        <li><strong>TTL Strategies:</strong> 5m, 1h, 1d</li>
+                        <li><strong>Cache Manager:</strong> NestJS cache-manager</li>
+                        <li><strong>Background Jobs:</strong> Async processing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Storage & Media</h3>
+                    <ul>
+                        <li><strong>Object Storage:</strong> MinIO</li>
+                        <li><strong>Protocol:</strong> S3-compatible</li>
+                        <li><strong>Processing:</strong> OCR, Transcription</li>
+                        <li><strong>Image:</strong> Sharp, EXIF extraction</li>
+                        <li><strong>Video:</strong> FFmpeg transcoding</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>DevOps</h3>
+                    <ul>
+                        <li><strong>Containerization:</strong> Docker</li>
+                        <li><strong>Orchestration:</strong> Docker Compose</li>
+                        <li><strong>CI/CD:</strong> GitHub Actions ready</li>
+                        <li><strong>Monitoring:</strong> Health checks</li>
+                        <li><strong>Logging:</strong> Winston, Pino</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>NLP Service</h3>
+                    <ul>
+                        <li><strong>Language:</strong> Python 3.11</li>
+                        <li><strong>Framework:</strong> FastAPI</li>
+                        <li><strong>NLP:</strong> spaCy, NLTK</li>
+                        <li><strong>Creolist:</strong> Haitian Creole processing</li>
+                        <li><strong>Models:</strong> Custom trained models</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Request Flow -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🔄 Request Flow</h2>
+
+            <h3>User Authentication Flow</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">User Login</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Keycloak</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">OAuth2 Flow</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">JWT Token</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Frontend</div>
+            </div>
+
+            <h3>API Request Flow</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">Client</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Rate Limiter</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Auth Guard</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Controller</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Service</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Cache/DB</div>
+            </div>
+
+            <h3>Search Query Flow</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">Search Input</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">NLP Processing</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">FTS Query</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">PostgreSQL</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Results + Facets</div>
+            </div>
+
+            <h3>Background Job Flow</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">Trigger Event</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Bull Queue</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Worker Process</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Processing</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Result Storage</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Database Schema -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🗄️ Database Schema</h2>
+
+            <h3>Core Entities</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>RecordEntity</h3>
+                    <p>Main traditional knowledge records</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Multilingual fields (HT/FR/EN)</li>
+                        <li>Full-text search vector</li>
+                        <li>Status workflow</li>
+                        <li>View count tracking</li>
+                        <li>Soft delete support</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>RecordVersionEntity</h3>
+                    <p>Version control system</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Complete snapshots</li>
+                        <li>Diff calculation</li>
+                        <li>Author tracking</li>
+                        <li>Revert capability</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>RecordCommentEntity</h3>
+                    <p>Threaded comments</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Parent-child relationships</li>
+                        <li>Moderation status</li>
+                        <li>Vote counting</li>
+                        <li>Nested threads</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>RecordVoteEntity</h3>
+                    <p>Community voting</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Vote types (verify, accurate, helpful)</li>
+                        <li>User tracking</li>
+                        <li>Timestamp</li>
+                        <li>Unique constraints</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>RecordRelationEntity</h3>
+                    <p>Cross-references</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Typed relationships</li>
+                        <li>Bidirectional links</li>
+                        <li>Metadata fields</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>RecordLocationEntity</h3>
+                    <p>Geographic data</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Coordinates (lat/lng)</li>
+                        <li>Place names</li>
+                        <li>GeoJSON support</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>RecordTimelineEntity</h3>
+                    <p>Historical events</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Flexible dating</li>
+                        <li>Event descriptions</li>
+                        <li>Period representations</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>AnalyticsEventEntity</h3>
+                    <p>Event tracking</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Event types</li>
+                        <li>User tracking</li>
+                        <li>Metadata (JSONB)</li>
+                        <li>Timestamp indexing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>UserProfileEntity</h3>
+                    <p>Extended profiles</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Bio and expertise</li>
+                        <li>Reputation score</li>
+                        <li>2FA settings</li>
+                        <li>Preferences</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>ReviewEntity</h3>
+                    <p>Review workflow</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Assignment tracking</li>
+                        <li>Status workflow</li>
+                        <li>Quality scoring</li>
+                        <li>Checklist items</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>CollabSessionEntity</h3>
+                    <p>Multi-user editing</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Active sessions</li>
+                        <li>User tracking</li>
+                        <li>Record locking</li>
+                        <li>Last activity</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>GDPRRequestEntity</h3>
+                    <p>GDPR compliance</p>
+                    <ul style="font-size: 0.9em;">
+                        <li>Request types</li>
+                        <li>Status tracking</li>
+                        <li>Expiry dates</li>
+                        <li>Audit trail</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Relationships</h3>
+            <div class="code-block">
+RecordEntity
+  ├── OneToMany → RecordVersionEntity
+  ├── OneToMany → RecordCommentEntity
+  ├── OneToMany → RecordVoteEntity
+  ├── OneToMany → RecordRelationEntity (source)
+  ├── OneToMany → RecordRelationEntity (target)
+  ├── OneToMany → RecordLocationEntity
+  ├── OneToMany → RecordTimelineEntity
+  ├── OneToMany → ReviewEntity
+  ├── OneToMany → CollabSessionEntity
+  └── ManyToOne → UserEntity (author)
+
+UserEntity (from Keycloak)
+  ├── OneToOne → UserProfileEntity
+  ├── OneToMany → RecordEntity
+  ├── OneToMany → RecordCommentEntity
+  ├── OneToMany → RecordVoteEntity
+  ├── OneToMany → AnalyticsEventEntity
+  ├── OneToMany → ReviewEntity (reviewer)
+  └── OneToMany → GDPRRequestEntity
+            </div>
+        </div>
+    </section>
+
+    <!-- Deployment -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🚀 Deployment Architecture</h2>
+
+            <h3>Docker Services</h3>
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <thead style="background: #667eea; color: white;">
+                    <tr>
+                        <th style="padding: 15px; text-align: left;">Service</th>
+                        <th style="padding: 15px; text-align: left;">Port</th>
+                        <th style="padding: 15px; text-align: left;">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: white;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>frontend</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">3000</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Next.js application</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>backend</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">4000</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">NestJS API server</td>
+                    </tr>
+                    <tr style="background: white;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>postgres</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">5432</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">PostgreSQL database</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>keycloak</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">8080</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Authentication server</td>
+                    </tr>
+                    <tr style="background: white;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>minio</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">9000, 9001</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Object storage (S3-compatible)</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>nlp-service</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">8000</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">NLP processing (Python)</td>
+                    </tr>
+                    <tr style="background: white;">
+                        <td style="padding: 15px; border: 1px solid #ddd;"><strong>redis</strong></td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">6379</td>
+                        <td style="padding: 15px; border: 1px solid #ddd;">Cache and job queue</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Network Architecture</h3>
+            <div class="code-block">
+                    Internet
+                       │
+                       ↓
+              [Reverse Proxy / Load Balancer]
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+        ↓              ↓              ↓
+    Frontend       Backend        Keycloak
+    (Next.js)     (NestJS)       (Auth)
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+        ↓              ↓              ↓
+   PostgreSQL       Redis         MinIO
+   (Database)      (Cache)      (Storage)
+                       │
+                       ↓
+                  NLP Service
+                   (Python)
+            </div>
+
+            <h3>Scalability Considerations</h3>
+            <ul style="margin-left: 20px;">
+                <li><strong>Horizontal Scaling:</strong> Frontend and backend can run multiple instances behind load balancer</li>
+                <li><strong>Database:</strong> PostgreSQL read replicas for read-heavy workloads</li>
+                <li><strong>Cache:</strong> Redis cluster for high availability</li>
+                <li><strong>Storage:</strong> MinIO distributed mode for multi-node setup</li>
+                <li><strong>CDN:</strong> Static assets can be served via CDN</li>
+                <li><strong>Async Jobs:</strong> Bull workers can be scaled independently</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="content-section">
+        <div class="container">
+            <h2>🔒 Security Architecture</h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Authentication</h3>
+                    <ul>
+                        <li>OAuth2/OIDC via Keycloak</li>
+                        <li>JWT token-based auth</li>
+                        <li>2FA with TOTP</li>
+                        <li>Session management</li>
+                        <li>Refresh token rotation</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Authorization</h3>
+                    <ul>
+                        <li>Role-based access control (RBAC)</li>
+                        <li>Resource-level permissions</li>
+                        <li>Field-level authorization</li>
+                        <li>Guards and decorators</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Data Protection</h3>
+                    <ul>
+                        <li>Encryption at rest (database)</li>
+                        <li>TLS/SSL for transit</li>
+                        <li>Password hashing (bcrypt)</li>
+                        <li>Sensitive data masking</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>API Security</h3>
+                    <ul>
+                        <li>Rate limiting (multi-tier)</li>
+                        <li>CORS configuration</li>
+                        <li>CSRF protection</li>
+                        <li>Input validation & sanitization</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Monitoring</h3>
+                    <ul>
+                        <li>Audit logging</li>
+                        <li>Security event tracking</li>
+                        <li>Failed login detection</li>
+                        <li>Anomaly detection ready</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Compliance</h3>
+                    <ul>
+                        <li>GDPR data export/deletion</li>
+                        <li>Data portability</li>
+                        <li>Consent management</li>
+                        <li>Privacy policy enforcement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3 style="margin-bottom: 20px;">🌺 Built with ❤️ for Haitian Cultural Preservation</h3>
+            <p>
+                <a href="https://github.com/alovladi007/CREOLE---AYITI-Traditional-Knowledge-Digital-Library">GitHub</a> •
+                <a href="http://localhost:4000/api/docs">API Docs</a> •
+                <a href="documentation.html">Documentation</a>
+            </p>
+            <p style="margin-top: 20px; opacity: 0.7;">MIT License © 2024 CREOLE TKDL</p>
+        </div>
+    </footer>
+</body>
+</html>
