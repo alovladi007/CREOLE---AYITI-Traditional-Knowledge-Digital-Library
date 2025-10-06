@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RecordEntity } from './entities/record.entity';
-import { Parser } from 'json2csv';
+import { Parser } from '@json2csv/plainjs';
 
 @Injectable()
 export class RecordsBulkService {
