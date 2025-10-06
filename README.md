@@ -2,13 +2,40 @@
 
 Traditional Knowledge Digital Library (TKDL-style) platform for documenting and protecting Haitian traditional knowledge and cultural expressions.
 
+---
+
+## 🎉 **NEW: Version 2.0 - Comprehensive Platform Enhancements**
+
+**The platform has been massively upgraded with 10 major feature categories!**
+
+📖 **[View Complete Enhancement Documentation →](ENHANCEMENTS.md)**
+📋 **[See All New Files & Features →](NEW_FILES_SUMMARY.md)**
+
+### Highlights of New Features:
+- 🔍 **Advanced Search**: Full-text search, faceted filtering, relevance ranking
+- 📊 **Analytics Dashboard**: Comprehensive tracking and visualizations
+- 🔒 **2FA & GDPR**: Enhanced security and compliance
+- 🌍 **Internationalization**: Haitian Creole, French, English support
+- 🎨 **Dark Mode**: Theme support with system preference detection
+- 🗺️ **Interactive Maps**: Geographic visualization with Leaflet
+- 📈 **GraphQL API**: Complete API with Swagger documentation
+- 🤝 **Collaboration**: Multi-user editing and review workflow
+- 🎬 **Rich Media**: Video/audio transcription, OCR, rich text editor
+- ⚡ **Redis Cache**: Performance optimization with background jobs
+
+**Total Addition**: 49 files changed | 4,261+ lines of code added | 13 new database entities
+
+---
+
 ## 🏗️ Architecture
 
-- **Backend**: NestJS + TypeORM + PostgreSQL
-- **Frontend**: Next.js 14 (App Router) with SSR
-- **Auth**: Keycloak OIDC with PKCE flow
+- **Backend**: NestJS + TypeORM + PostgreSQL + GraphQL + Swagger
+- **Frontend**: Next.js 14 (App Router) with SSR + i18n + Dark Mode
+- **Auth**: Keycloak OIDC with PKCE flow + 2FA
 - **Storage**: MinIO for media files
-- **NLP**: FastAPI service for text/image redaction
+- **Cache**: Redis for performance optimization
+- **Jobs**: Bull queue for background processing
+- **NLP**: FastAPI service for text/image redaction + OCR + transcription
 - **Containerization**: Docker Compose orchestration
 
 ## 🚀 Quick Start
