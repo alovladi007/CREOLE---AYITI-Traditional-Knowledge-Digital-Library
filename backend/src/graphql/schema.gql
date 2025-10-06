@@ -1,0 +1,236 @@
+type Record {
+  id: ID!
+  title_ht: String!
+  title_fr: String
+  abstract_en: String
+  creole_class: String!
+  ipc_codes: [String!]
+  tk_labels: [String!]
+  access_tier: String!
+  examiner_digest: String
+  community: String
+  region: [String!]
+  metadata: JSON
+  view_count: Int!
+  status: String!
+  version: Int!
+  parent_version_id: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  comments: [Comment!]
+  votes: VoteSummary
+  relatedRecords: [RelatedRecord!]
+}
+
+type Comment {
+  id: ID!
+  record_id: String!
+  user_id: String!
+  user_name: String!
+  content: String!
+  parent_comment_id: String
+  status: String!
+  upvotes: Int!
+  downvotes: Int!
+  createdAt: DateTime!
+}
+
+type VoteSummary {
+  verify: Int!
+  accurate: Int!
+  helpful: Int!
+  flag: Int!
+}
+
+type RelatedRecord {
+  id: ID!
+  relation_type: String!
+  description: String
+  related_record: Record!
+  direction: String!
+}
+
+type RecordSearchResult {
+  data: [Record!]!
+  meta: SearchMeta!
+  facets: Facets
+}
+
+type SearchMeta {
+  total: Int!
+  page: Int!
+  limit: Int!
+  totalPages: Int!
+}
+
+type Facets {
+  creole_class: [FacetItem!]!
+  access_tier: [FacetItem!]!
+  community: [FacetItem!]!
+}
+
+type FacetItem {
+  value: String!
+  count: Int!
+}
+
+type AnalyticsDashboard {
+  eventsByType: [EventCount!]!
+  topRecords: [TopRecord!]!
+  topSearches: [SearchTerm!]!
+  dailyActivity: [DailyActivity!]!
+  uniqueUsers: Int!
+}
+
+type EventCount {
+  type: String!
+  count: Int!
+}
+
+type TopRecord {
+  record_id: String!
+  view_count: Int!
+}
+
+type SearchTerm {
+  search_term: String!
+  count: Int!
+}
+
+type DailyActivity {
+  date: DateTime!
+  count: Int!
+}
+
+type UserProfile {
+  id: ID!
+  keycloak_user_id: String!
+  email: String!
+  display_name: String
+  bio: String
+  affiliation: String
+  community: String
+  areas_of_expertise: [String!]
+  languages: [String!]
+  contribution_count: Int!
+  reputation_score: Int!
+  is_public: Boolean!
+}
+
+scalar DateTime
+scalar JSON
+
+type Query {
+  # Record queries
+  record(id: ID!): Record
+  records(
+    q: String
+    creole_class: String
+    access_tier: String
+    tk_labels: [String!]
+    regions: [String!]
+    community: String
+    ipc_codes: [String!]
+    date_from: DateTime
+    date_to: DateTime
+    page: Int
+    limit: Int
+    sort_by: String
+    sort_order: String
+    include_facets: Boolean
+  ): RecordSearchResult!
+
+  similarRecords(recordId: ID!, limit: Int): [Record!]!
+
+  # Comment queries
+  recordComments(recordId: ID!): [Comment!]!
+
+  # Analytics queries
+  analyticsDashboard(startDate: DateTime, endDate: DateTime): AnalyticsDashboard!
+  recordAnalytics(recordId: ID!, days: Int): JSON
+
+  # User queries
+  userProfile(userId: ID!): UserProfile
+
+  # Version queries
+  recordVersionHistory(recordId: ID!): JSON
+}
+
+type Mutation {
+  # Record mutations
+  createRecord(input: CreateRecordInput!): Record!
+  updateRecord(id: ID!, input: UpdateRecordInput!): Record!
+
+  # Comment mutations
+  createComment(input: CreateCommentInput!): Comment!
+  voteComment(id: ID!, voteType: String!): Comment!
+
+  # Vote mutations
+  voteRecord(input: VoteRecordInput!): JSON
+
+  # Relation mutations
+  createRecordRelation(input: CreateRelationInput!): JSON
+
+  # User mutations
+  updateUserProfile(input: UpdateUserProfileInput!): UserProfile!
+}
+
+input CreateRecordInput {
+  title_ht: String!
+  title_fr: String
+  abstract_en: String
+  creole_class: String!
+  ipc_codes: [String!]
+  tk_labels: [String!]
+  access_tier: String
+  community: String
+  region: [String!]
+  metadata: JSON
+}
+
+input UpdateRecordInput {
+  title_ht: String
+  title_fr: String
+  abstract_en: String
+  creole_class: String
+  ipc_codes: [String!]
+  tk_labels: [String!]
+  access_tier: String
+  community: String
+  region: [String!]
+  metadata: JSON
+  status: String
+}
+
+input CreateCommentInput {
+  record_id: ID!
+  user_id: ID!
+  user_name: String!
+  content: String!
+  parent_comment_id: ID
+}
+
+input VoteRecordInput {
+  record_id: ID!
+  user_id: ID!
+  vote_type: String!
+  comment: String
+}
+
+input CreateRelationInput {
+  source_record_id: ID!
+  target_record_id: ID!
+  relation_type: String!
+  description: String
+}
+
+input UpdateUserProfileInput {
+  keycloak_user_id: ID!
+  display_name: String
+  bio: String
+  affiliation: String
+  community: String
+  areas_of_expertise: [String!]
+  languages: [String!]
+  is_public: Boolean
+}

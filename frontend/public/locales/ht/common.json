@@ -1,0 +1,74 @@
+{
+  "app": {
+    "title": "CREOLE — Bibliyotèk Dijital Konesans Tradisyonèl",
+    "description": "Platfòm pou dokimante ak pwoteje konesans tradisyonèl Ayisyen"
+  },
+  "nav": {
+    "home": "Akèy",
+    "search": "Rechèch",
+    "records": "Dosye",
+    "submit": "Soumèt",
+    "dashboard": "Tablo Bò",
+    "profile": "Pwofil",
+    "signin": "Konekte",
+    "signout": "Dekonekte",
+    "admin": "Administrasyon"
+  },
+  "search": {
+    "placeholder": "Rechèch konesans tradisyonèl...",
+    "advanced": "Rechèch Avanse",
+    "filters": "Filtè",
+    "results": "Rezilta",
+    "noResults": "Pa gen rezilta",
+    "showing": "Montre {{from}}-{{to}} sou {{total}}",
+    "sortBy": "Triye pa",
+    "relevance": "Pètinan",
+    "date": "Dat",
+    "title": "Tit"
+  },
+  "record": {
+    "title": "Tit",
+    "classification": "Klasifikasyon",
+    "community": "Kominote",
+    "region": "Rejyon",
+    "accessTier": "Nivo Aksè",
+    "status": "Estati",
+    "createdAt": "Kreye",
+    "updatedAt": "Modifye",
+    "views": "Vi",
+    "public": "Piblik",
+    "restricted": "Limite",
+    "secret": "Sekrè",
+    "draft": "Bwouyon",
+    "published": "Pibliye",
+    "archived": "Achive"
+  },
+  "common": {
+    "save": "Anrejistre",
+    "cancel": "Anile",
+    "delete": "Efase",
+    "edit": "Modifye",
+    "view": "Gade",
+    "download": "Telechaje",
+    "export": "Ekspòte",
+    "import": "Enpòte",
+    "loading": "Chajman...",
+    "submit": "Soumèt",
+    "next": "Pwochen",
+    "previous": "Anvan",
+    "close": "Fèmen",
+    "confirm": "Konfime",
+    "yes": "Wi",
+    "no": "Non"
+  },
+  "classification": {
+    "C-FOOD": "Manje Tradisyonèl",
+    "C-MED": "Medsin Tradisyonèl",
+    "C-RIT": "Ritiyèl ak Seremoni",
+    "C-MUS": "Mizik ak Dans",
+    "C-CRAFT": "Atizana",
+    "C-AGRI": "Agrikilti Tradisyonèl",
+    "C-ORAL": "Tradisyon Oral",
+    "C-EDU": "Edikasyon Tradisyonèl"
+  }
+}

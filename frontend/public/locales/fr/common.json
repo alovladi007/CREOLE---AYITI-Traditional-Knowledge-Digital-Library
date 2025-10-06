@@ -1,0 +1,74 @@
+{
+  "app": {
+    "title": "CREOLE — Bibliothèque Numérique du Savoir Traditionnel",
+    "description": "Plateforme pour documenter et protéger le savoir traditionnel haïtien"
+  },
+  "nav": {
+    "home": "Accueil",
+    "search": "Recherche",
+    "records": "Dossiers",
+    "submit": "Soumettre",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "signin": "Se connecter",
+    "signout": "Se déconnecter",
+    "admin": "Administration"
+  },
+  "search": {
+    "placeholder": "Rechercher des savoirs traditionnels...",
+    "advanced": "Recherche Avancée",
+    "filters": "Filtres",
+    "results": "Résultats",
+    "noResults": "Aucun résultat",
+    "showing": "Affichage {{from}}-{{to}} sur {{total}}",
+    "sortBy": "Trier par",
+    "relevance": "Pertinence",
+    "date": "Date",
+    "title": "Titre"
+  },
+  "record": {
+    "title": "Titre",
+    "classification": "Classification",
+    "community": "Communauté",
+    "region": "Région",
+    "accessTier": "Niveau d'accès",
+    "status": "Statut",
+    "createdAt": "Créé",
+    "updatedAt": "Modifié",
+    "views": "Vues",
+    "public": "Public",
+    "restricted": "Restreint",
+    "secret": "Secret",
+    "draft": "Brouillon",
+    "published": "Publié",
+    "archived": "Archivé"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "download": "Télécharger",
+    "export": "Exporter",
+    "import": "Importer",
+    "loading": "Chargement...",
+    "submit": "Soumettre",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "classification": {
+    "C-FOOD": "Alimentation Traditionnelle",
+    "C-MED": "Médecine Traditionnelle",
+    "C-RIT": "Rituels et Cérémonies",
+    "C-MUS": "Musique et Danse",
+    "C-CRAFT": "Artisanat",
+    "C-AGRI": "Agriculture Traditionnelle",
+    "C-ORAL": "Tradition Orale",
+    "C-EDU": "Éducation Traditionnelle"
+  }
+}

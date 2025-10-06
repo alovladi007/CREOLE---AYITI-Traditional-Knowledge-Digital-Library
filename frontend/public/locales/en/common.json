@@ -1,0 +1,74 @@
+{
+  "app": {
+    "title": "CREOLE — Traditional Knowledge Digital Library",
+    "description": "Platform to document and protect Haitian traditional knowledge"
+  },
+  "nav": {
+    "home": "Home",
+    "search": "Search",
+    "records": "Records",
+    "submit": "Submit",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "signin": "Sign In",
+    "signout": "Sign Out",
+    "admin": "Administration"
+  },
+  "search": {
+    "placeholder": "Search traditional knowledge...",
+    "advanced": "Advanced Search",
+    "filters": "Filters",
+    "results": "Results",
+    "noResults": "No results found",
+    "showing": "Showing {{from}}-{{to}} of {{total}}",
+    "sortBy": "Sort by",
+    "relevance": "Relevance",
+    "date": "Date",
+    "title": "Title"
+  },
+  "record": {
+    "title": "Title",
+    "classification": "Classification",
+    "community": "Community",
+    "region": "Region",
+    "accessTier": "Access Level",
+    "status": "Status",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "views": "Views",
+    "public": "Public",
+    "restricted": "Restricted",
+    "secret": "Secret",
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "download": "Download",
+    "export": "Export",
+    "import": "Import",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "classification": {
+    "C-FOOD": "Traditional Food",
+    "C-MED": "Traditional Medicine",
+    "C-RIT": "Rituals & Ceremonies",
+    "C-MUS": "Music & Dance",
+    "C-CRAFT": "Crafts",
+    "C-AGRI": "Traditional Agriculture",
+    "C-ORAL": "Oral Tradition",
+    "C-EDU": "Traditional Education"
+  }
+}
