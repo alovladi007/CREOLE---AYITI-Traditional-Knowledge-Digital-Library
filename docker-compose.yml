@@ -26,7 +26,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "${API_PORT}:4000"
+      - "4000:4000"
     command: npm run start:prod
 
   frontend:
@@ -44,7 +44,7 @@ services:
     container_name: creole-nlp
     env_file: .env
     ports:
-      - "${NLP_PORT}:8000"
+      - "8000:8000"
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
